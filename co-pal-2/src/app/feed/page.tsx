@@ -6,7 +6,7 @@ import { authClient } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
 import { ProtectedRoute } from "@/components/auth/protected-route";
 import { UserCard, UserProfile } from "@/components/feed/user-card";
-import { ProfileModal } from "@/components/feed/profile-modal";
+import { ProfileSlide } from "@/components/feed/profile-slide";
 import { toast } from "sonner";
 
 // Sample user data for testing
@@ -14,44 +14,32 @@ const sampleUsers: UserProfile[] = [
   {
     id: "1",
     name: "Alex Chen",
-    username: "alexchen",
-    bio: "Full-stack developer passionate about React and Node.js. Love building scalable applications and contributing to open source projects.",
-    avatar: "",
-    location: "San Francisco, CA",
-    skills: ["React", "Node.js", "TypeScript", "PostgreSQL", "AWS"],
-    languages: ["JavaScript", "Python", "Go"],
-    totalHours: 1247,
-    averageHours: 6.2,
-    lastActive: "2 hours ago",
-    joinedDate: "Jan 2023"
+    bio: "Full-stack developer passionate about React and Node.js Full-stack developer passionate about React and Node.js",
+    avatar: ""
   },
   {
     id: "2",
     name: "Sarah Johnson",
-    username: "sarahj",
-    bio: "Frontend specialist with expertise in modern JavaScript frameworks. Currently exploring AI/ML integration in web applications.",
-    avatar: "",
-    location: "New York, NY",
-    skills: ["Vue.js", "React", "SASS", "Webpack", "Jest"],
-    languages: ["JavaScript", "TypeScript", "Python"],
-    totalHours: 892,
-    averageHours: 4.8,
-    lastActive: "1 day ago",
-    joinedDate: "Mar 2023"
+    bio: "Frontend specialist with expertise in modern JavaScript frameworks",
+    avatar: ""
   },
   {
     id: "3",
     name: "Marcus Rodriguez",
-    username: "marcusr",
-    bio: "Backend engineer focused on microservices and cloud architecture. Enjoy mentoring junior developers and sharing knowledge.",
-    avatar: "",
-    location: "Austin, TX",
-    skills: ["Docker", "Kubernetes", "GraphQL", "Redis", "MongoDB"],
-    languages: ["Go", "Python", "Java", "Bash"],
-    totalHours: 1563,
-    averageHours: 7.1,
-    lastActive: "30 min ago",
-    joinedDate: "Nov 2022"
+    bio: "Backend engineer focused on microservices and cloud architecture",
+    avatar: ""
+  },
+  {
+    id: "4",
+    name: "Emily Davis",
+    bio: "UI/UX designer creating beautiful and intuitive user experiences",
+    avatar: ""
+  },
+  {
+    id: "5",
+    name: "David Kim",
+    bio: "DevOps engineer passionate about automation and infrastructure",
+    avatar: ""
   }
 ];
 
@@ -113,8 +101,8 @@ export default function FeedPage() {
         </div>
       </div>
 
-      {/* Profile Modal */}
-      <ProfileModal
+      {/* Profile Slide */}
+      <ProfileSlide
         user={selectedUser}
         isOpen={isModalOpen}
         onClose={handleCloseModal}
