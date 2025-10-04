@@ -12,6 +12,26 @@ import { Slider } from "@/components/ui/slider"
 import { onboardingSchema, type OnboardingFormData } from "@/lib/schemas/onboarding"
 import { cn } from "@/lib/utils"
 import { ChevronLeft, ChevronRight, Github, Linkedin, Clock } from "lucide-react"
+import { authClient } from "@/lib/auth-client"
+import { createProfileRecord } from "./actions"
+
+
+
+// The expected structure of the form data
+// type OnboardingFormData = {
+//   name: string;
+//   email: string;
+//   id: string; 
+//   age: number;
+//   gender: string;
+//   timeCommitment: number[];
+//   techStack: string[];
+//   country: string;
+//   occupation: string;
+//   openForProjects: boolean;
+// };
+
+
 
 const techStackOptions = [
   "JavaScript",
@@ -144,6 +164,8 @@ const occupations = [
   "Other",
 ]
 
+
+
 // Dummy function to simulate social connection status
 const checkSocialConnections = async (): Promise<{ github: boolean; wakatime: boolean; linkedin: boolean }> => {
   // Simulate API call delay
@@ -157,6 +179,8 @@ const checkSocialConnections = async (): Promise<{ github: boolean; wakatime: bo
   }
 }
 
+
+
 export default function OnboardingPage() {
   const [currentPage, setCurrentPage] = useState(1)
   const [selectedTechStack, setSelectedTechStack] = useState<string[]>([])
@@ -167,6 +191,14 @@ export default function OnboardingPage() {
     linkedin: false
   })
   const [isCheckingSocials, setIsCheckingSocials] = useState(false)
+
+  const { 
+    data: session, 
+    isPending, //loading state
+    error, //error object
+    refetch //refetch the session
+} = authClient.useSession() 
+
 
   const {
     register,
@@ -186,15 +218,21 @@ export default function OnboardingPage() {
 
   const onSubmit = async (data: OnboardingFormData) => {
     try {
-      console.log("Onboarding data:", data)
-      // Here you would typically send the data to your API
-      // await submitOnboardingData(data)
-      alert("Onboarding completed successfully!")
+      console.log("Onboarding data received for submission:", data);
+  
+      // 1. Execute the Prisma data insertion operation
+      const newRecord = await createProfileRecord(data, session?.user?.id || "");
+  
+      // 2. Log the result from the database
+      console.log("✅ Prisma insertion complete. New Record:", newRecord);
+  
+      alert("Onboarding completed successfully!");
+      
     } catch (error) {
-      console.error("Error submitting onboarding:", error)
-      alert("There was an error submitting your information. Please try again.")
+      console.error("❌ Error submitting onboarding:", error);
+      alert("There was an error submitting your information. Please try again.");
     }
-  }
+  };
 
   const handleTechStackToggle = (tech: string) => {
     const newTechStack = selectedTechStack.includes(tech)
