@@ -268,7 +268,6 @@ export function ProfileSlide({ user, isOpen, onClose }: ProfileSlideProps) {
                                 ))}
                             </div>
                         </div>
-
                         {/* Content */}
                         <div>
                             {activeTab === "Creations" && (
