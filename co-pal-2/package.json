@@ -22,6 +22,7 @@
     "@tabler/icons": "^3.35.0",
     "@tabler/icons-react": "^3.35.0",
     "better-auth": "^1.3.26",
+    "better-auth-setup": "link:",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^0.544.0",

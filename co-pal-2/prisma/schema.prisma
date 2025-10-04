@@ -8,77 +8,96 @@ datasource db {
 }
 
 model User {
-  id            String    @id
-  name          String
-  email         String    @unique
-  emailVerified Boolean   @default(false)
-  image         String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @default(now()) @updatedAt
-  Message       Message[]
-  accounts      Account[]
-  sessions      Session[]
-  wakatime      WakaTime?
-  Chat          Chat[]    @relation("UserToChat")
+  id              String      @id
+  name            String
+  email           String      @unique
+  emailVerified   Boolean     @default(false)
+  image           String?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @default(now()) @updatedAt
+  Message         Message[]
+  accounts        Account[]
+  sessions        Session[]
+  wakatime        WakaTime?
+  Chat            Chat[]      @relation("UserToChat")
+  profile         Profile?
 
   @@map("user")
 }
 
+model Profile {
+  id              String    @id @default(cuid())
+  age             Int?
+  gender          String?
+  timeCommitment  Int[]     @db.Integer
+  techStack       String[]  @db.Text
+  country         String?
+  occupation      String?
+  openForProjects Boolean   @default(false)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  userId          String    @unique
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("profile")
+}
+
 model Session {
-  id        String   @id
-  expiresAt DateTime
-  token     String   @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  ipAddress String?
-  userAgent String?
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id          String   @id
+  expiresAt   DateTime
+  token       String   @unique
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  ipAddress   String?
+  userAgent   String?
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("session")
 }
 
 model Account {
-  id                    String    @id
-  accountId             String
-  providerId            String
-  userId                String
-  accessToken           String?
-  refreshToken          String?
-  idToken               String?
-  accessTokenExpiresAt  DateTime?
-  refreshTokenExpiresAt DateTime?
-  scope                 String?
-  password              String?
-  createdAt             DateTime  @default(now())
-  updatedAt             DateTime  @updatedAt
-  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id                      String    @id
+  accountId               String
+  providerId              String
+  userId                  String
+  accessToken             String?
+  refreshToken            String?
+  idToken                 String?
+  accessTokenExpiresAt    DateTime?
+  refreshTokenExpiresAt   DateTime?
+  scope                   String?
+  password                String?
+  createdAt               DateTime  @default(now())
+  updatedAt               DateTime  @updatedAt
+  user                    User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("account")
 }
 
 model Verification {
-  id         String   @id
-  identifier String
-  value      String
-  expiresAt  DateTime
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @default(now()) @updatedAt
+  id          String   @id
+  identifier  String
+  value       String
+  expiresAt   DateTime
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
 
   @@map("verification")
 }
 
 model WakaTime {
-  id           String   @id @default(cuid())
-  userId       String   @unique
-  accessToken  String
-  refreshToken String?
-  tokenType    String?
-  expiresIn    Int?
-  scope        String?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id              String   @id @default(cuid())
+  userId          String   @unique
+  accessToken     String
+  refreshToken    String?
+  tokenType       String?
+  expiresIn       Int?
+  scope           String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("wakatime")
 }
@@ -86,7 +105,7 @@ model WakaTime {
 model Chat {
   id        String    @id
   createdAt DateTime  @default(now())
-  updatedAt DateTime
+  updatedAt DateTime  @updatedAt
   Message   Message[]
   user      User[]    @relation("UserToChat")
 }
