@@ -155,3 +155,4 @@ model Message {
   Chat      Chat     @relation(fields: [chatId], references: [id])
   user      User     @relation(fields: [senderId], references: [id])
 }
+

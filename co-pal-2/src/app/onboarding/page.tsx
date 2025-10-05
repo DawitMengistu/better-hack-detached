@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -13,6 +14,7 @@ import { onboardingSchema, type OnboardingFormData } from "@/lib/schemas/onboard
 import { cn } from "@/lib/utils"
 import { ChevronLeft, ChevronRight, Github, Linkedin, Clock } from "lucide-react"
 import { authClient } from "@/lib/auth-client"
+<<<<<<< HEAD
 import { createProfileRecord, saveGitHubData } from "./actions"
 import { useGitHubStats } from "@/hooks/use-github-stats"
 
@@ -42,6 +44,31 @@ const OCCUPATIONS = [
   "Technical Lead", "Engineering Manager", "CTO", "CEO/Founder", "Freelancer", "Student",
   "Bootcamp Graduate", "Career Changer", "Consultant", "Other"
 ]
+=======
+import { createProfileRecord } from "./actions"
+import { countries, techStackOptions, occupations } from "@/utils/constants"
+
+
+
+// The expected structure of the form data
+// type OnboardingFormData = {
+//   name: string;
+//   email: string;
+//   id: string; 
+//   age: number;
+//   gender: string;
+//   timeCommitment: number[];
+//   techStack: string[];
+//   country: string;
+//   occupation: string;
+//   openForProjects: boolean;
+// };
+
+
+
+
+
+>>>>>>> aa5d59dd42f4e0462fdd43a5819b523f8a0c5ce6
 
 // Types
 interface SocialConnections {
@@ -140,7 +167,11 @@ const NavigationButtons = ({
 )
 
 export default function OnboardingPage() {
+<<<<<<< HEAD
   // State
+=======
+  const router = useRouter()
+>>>>>>> aa5d59dd42f4e0462fdd43a5819b523f8a0c5ce6
   const [currentPage, setCurrentPage] = useState(1)
   const [selectedTechStack, setSelectedTechStack] = useState<string[]>([])
   const [timeCommitment, setTimeCommitment] = useState<[number, number]>([10, 40])
@@ -174,10 +205,26 @@ export default function OnboardingPage() {
   // Handlers
   const handleSubmitForm = async (data: OnboardingFormData) => {
     try {
+<<<<<<< HEAD
       console.log("Onboarding data received for submission:", data)
       const newRecord = await createProfileRecord(data, session?.user?.id || "")
       console.log("✅ Prisma insertion complete. New Record:", newRecord)
       alert("Onboarding completed successfully!")
+=======
+      console.log("Onboarding data received for submission:", data);
+  
+      // 1. Execute the Prisma data insertion operation
+      const newRecord = await createProfileRecord(data, session?.user?.id || "");
+  
+  // 2. Log the result from the database
+  console.log("✅ Prisma insertion complete. New Record:", newRecord);
+
+  // Redirect the user to preferences so they can set partner preferences
+  router.push("/preferences")
+  // Show a quick toast/alert for feedback
+  alert("Onboarding completed successfully! Redirecting to preferences...");
+      
+>>>>>>> aa5d59dd42f4e0462fdd43a5819b523f8a0c5ce6
     } catch (error) {
       console.error("❌ Error submitting onboarding:", error)
       alert("There was an error submitting your information. Please try again.")

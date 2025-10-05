@@ -12,13 +12,15 @@ export async function GET(request: NextRequest) {
   if (error) {
     console.error("WakaTime OAuth error:", error);
     return NextResponse.redirect(
-      new URL("/feed?error=wakatime_auth_failed", request.url)
+      new URL("/profile?error=wakatime_auth_failed", request.url)
     );
   }
 
   if (!code) {
     console.error("No authorization code received from WakaTime");
-    return NextResponse.redirect(new URL("/feed?error=no_code", request.url));
+    return NextResponse.redirect(
+      new URL("/profile?error=no_code", request.url)
+    );
   }
 
   try {
@@ -37,13 +39,6 @@ export async function GET(request: NextRequest) {
       ...tokenParams,
       client_secret: "***",
     });
-
-    // Debug: Check if environment variables are loaded correctly
-    console.log("Environment check:");
-    console.log("WAKATIME_CLIENT_ID:", process.env.WAKATIME_CLIENT_ID);
-    console.log("WAKATIME_CLIENT_SECRET:", process.env.WAKATIME_CLIENT_SECRET);
-    console.log("Expected App ID from dashboard: r4UsokDtagvDTZwoIeVQhHXY");
-    console.log("Expected App Secret from dashboard: [REDACTED]");
 
     // Try the exact format WakaTime expects
     const formData = new URLSearchParams();
@@ -148,7 +143,7 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error("WakaTime OAuth callback error:", error);
     return NextResponse.redirect(
-      new URL("/feed?error=wakatime_callback_failed", request.url)
+      new URL("/profile?error=wakatime_callback_failed", request.url)
     );
   }
 }
