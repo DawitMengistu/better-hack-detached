@@ -33,6 +33,15 @@ model User {
   passedUsers        UserPass[]   @relation("UserPasses")
   wakatime           WakaTime?
   Chat               Chat[]       @relation("UserToChat")
+  // User interaction tracking
+  likedUsers         UserLike[]   @relation("UserLikes")
+  passedUsers        UserPass[]   @relation("UserPasses")
+  likedByUsers       UserLike[]   @relation("LikedByUsers")
+  passedByUsers      UserPass[]   @relation("PassedByUsers")
+  // Match relations
+  matchesAsUser1     Match[]      @relation("User1Matches")
+  matchesAsUser2     Match[]      @relation("User2Matches")
+  profile            Profile?
 
   @@map("user")
 }
