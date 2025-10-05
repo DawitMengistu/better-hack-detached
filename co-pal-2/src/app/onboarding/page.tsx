@@ -170,7 +170,11 @@ export default function OnboardingPage() {
       console.log("Onboarding data received for submission:", data)
       const newRecord = await createProfileRecord(data, session?.user?.id || "")
       console.log("✅ Prisma insertion complete. New Record:", newRecord)
+      
       alert("Onboarding completed successfully!")
+      
+      // Redirect to main app
+      router.push("/feed")
 
     } catch (error) {
       console.error("❌ Error submitting onboarding:", error)
