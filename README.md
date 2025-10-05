@@ -61,10 +61,14 @@ A Tinder-like platform specifically designed for tech professionals to discover,
 ```typescript
 - Next.js API Routes
 - Prisma ORM with PostgreSQL
-- NextAuth.js for authentication
-- GitHub OAuth integration
+- NextAuth.js with advanced session management
+- Multi-provider OAuth (GitHub, LinkedIn, Google, Apple)
+- Enterprise SSO (SAML, OIDC)
+- JWT token management with refresh tokens
 - WakaTime API for productivity tracking
 - LinkedIn API for professional data
+- Biometric authentication services
+- Two-factor authentication (TOTP, SMS)
 ```
 
 ### **Key Features Implemented**
