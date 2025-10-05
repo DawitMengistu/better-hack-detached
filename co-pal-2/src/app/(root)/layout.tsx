@@ -15,31 +15,30 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
 
-    
+
   return (
     <ProtectedRoute>
-        <div className="min-h-screen bg-background">
-        <main className="pb-20">
-            {/* {children} */}
-            <div className="min-h-screen bg-background pb-16">
-                <div className="max-w-sm mx-auto py-8 px-4">
-                    {/* Header */}
-                    <div className="flex justify-between items-center mb-8">
-                        <div>
-                            <h1 className="text-3xl font-bold text-foreground">You</h1>
-                            <p className="text-muted-foreground mt-1">
-                                Your profile and settings
-                            </p>
-                        </div>
-                        <SignOutButton />
-                    </div>
+      <div className=" bg-red-500">
 
-                    {/* Profile Content */}
-                    {children}
-                </div>
+        {/* {children} */}
+        <div className="min-h-full bg-background">
+          <div className="max-w-sm mx-auto py-8 px-4 h-full">
+            {/* Header */}
+            <div className="flex justify-between items-center mb-2">
+              <div>
+                <h1 className="text-3xl font-bold text-foreground">You</h1>
+                <p className="text-muted-foreground mt-1">
+                  Your profile and settings
+                </p>
+              </div>
+              <SignOutButton />
             </div>
-        </main>
+
+            {/* Profile Content */}
+            {children}
+          </div>
         </div>
+      </div>
     </ProtectedRoute>
   );
 }
