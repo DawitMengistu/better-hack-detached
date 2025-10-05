@@ -12,14 +12,14 @@ export function WakaTimeConnect() {
     const handleConnect = async () => {
         setIsConnecting(true);
         try {
-            // Manual WakaTime OAuth flow
-            const clientId = process.env.NEXT_PUBLIC_WAKATIME_CLIENT_ID;
-            const redirectUri = `${window.location.origin}/api/auth/callback/wakatime`;
-            const scope = "read_summaries";
+            console.log("Attempting WakaTime OAuth with Better Auth...");
+            console.log("Base URL:", process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000");
 
-            const authUrl = `https://wakatime.com/oauth/authorize?client_id=${clientId}&response_type=code&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${scope}`;
-
-            window.location.href = authUrl;
+            // Use Better Auth Generic OAuth for WakaTime
+            await authClient.signIn.oauth2({
+                providerId: "wakatime",
+                callbackURL: "/profile"
+            });
         } catch (error) {
             console.error("WakaTime connection error:", error);
             toast.error("Failed to connect to WakaTime. Please try again.");

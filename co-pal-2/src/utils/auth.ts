@@ -1,5 +1,6 @@
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
+import { genericOAuth } from "better-auth/plugins";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
@@ -11,6 +12,9 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: false,
+  },
+  emailVerification: {
+    enabled: false,
   },
   socialProviders: {
     github: {
@@ -31,6 +35,32 @@ export const auth = betterAuth({
       scope: ["openid", "profile", "email"],
     },
   },
+  plugins: [
+    genericOAuth({
+      config: [
+        {
+          providerId: "wakatime",
+          clientId: process.env.WAKATIME_CLIENT_ID as string,
+          clientSecret: process.env.WAKATIME_CLIENT_SECRET as string,
+          authorizationUrl: "https://wakatime.com/oauth/authorize",
+          tokenUrl: "https://wakatime.com/oauth/token",
+          userInfoUrl: "https://wakatime.com/api/v1/users/current",
+          scopes: ["read_summaries"],
+          userInfoRequestOptions: {
+            headers: {
+              Authorization: "Bearer {access_token}",
+            },
+          },
+          userInfoMap: {
+            id: "data.id",
+            name: "data.full_name",
+            email: "data.email",
+            image: "data.photo",
+          },
+        },
+      ],
+    }),
+  ],
   secret: process.env.BETTER_AUTH_SECRET || "fallback-secret-key",
   baseURL: process.env.BETTER_AUTH_URL || "http://localhost:3000",
 });
