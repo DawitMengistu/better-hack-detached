@@ -1,0 +1,118 @@
+Account Linking
+Account linking enables users to associate multiple authentication methods with a single account. With Better Auth, users can connect additional social sign-ons or OAuth providers to their existing accounts if the provider confirms the user's email as verified.
+
+If account linking is disabled, no accounts can be linked, regardless of the provider or email verification status.
+
+auth.ts
+
+export const auth = betterAuth({
+    account: {
+        accountLinking: {
+            enabled: true, 
+        }
+    },
+});
+Forced Linking
+You can specify a list of "trusted providers." When a user logs in using a trusted provider, their account will be automatically linked even if the provider doesn’t confirm the email verification status. Use this with caution as it may increase the risk of account takeover.
+
+auth.ts
+
+export const auth = betterAuth({
+    account: {
+        accountLinking: {
+            enabled: true,
+            trustedProviders: ["google", "github"]
+        }
+    },
+});
+Manually Linking Accounts
+Users already signed in can manually link their account to additional social providers or credential-based accounts.
+
+Linking Social Accounts: Use the linkSocial method on the client to link a social provider to the user's account.
+
+
+await authClient.linkSocial({
+    provider: "google", // Provider to link
+    callbackURL: "/callback" // Callback URL after linking completes
+});
+You can also request specific scopes when linking a social account, which can be different from the scopes used during the initial authentication:
+
+
+await authClient.linkSocial({
+    provider: "google",
+    callbackURL: "/callback",
+    scopes: ["https://www.googleapis.com/auth/drive.readonly"] // Request additional scopes
+});
+You can also link accounts using ID tokens directly, without redirecting to the provider's OAuth flow:
+
+
+await authClient.linkSocial({
+    provider: "google",
+    idToken: {
+        token: "id_token_from_provider",
+        nonce: "nonce_used_for_token", // Optional
+        accessToken: "access_token", // Optional, may be required by some providers
+        refreshToken: "refresh_token" // Optional
+    }
+});
+This is useful when you already have valid tokens from the provider, for example:
+
+After signing in with a native SDK
+When using a mobile app that handles authentication
+When implementing custom OAuth flows
+The ID token must be valid and the provider must support ID token verification.
+
+If you want your users to be able to link a social account with a different email address than the user, or if you want to use a provider that does not return email addresses, you will need to enable this in the account linking settings.
+
+auth.ts
+
+export const auth = betterAuth({
+    account: {
+        accountLinking: {
+            allowDifferentEmails: true
+        }
+    },
+});
+If you want the newly linked accounts to update the user information, you need to enable this in the account linking settings.
+
+auth.ts
+
+export const auth = betterAuth({
+    account: {
+        accountLinking: {
+            updateUserInfoOnLink: true
+        }
+    },
+});
+Linking Credential-Based Accounts: To link a credential-based account (e.g., email and password), users can initiate a "forgot password" flow, or you can call the setPassword method on the server.
+
+
+await auth.api.setPassword({
+    headers: /* headers containing the user's session token */,
+    password: /* new password */
+});
+setPassword can't be called from the client for security reasons.
+
+Account Unlinking
+You can unlink a user account by providing a providerId.
+
+
+await authClient.unlinkAccount({
+    providerId: "google"
+});
+// Unlink a specific account
+await authClient.unlinkAccount({
+    providerId: "google",
+    accountId: "123"
+});
+If the account doesn't exist, it will throw an error. Additionally, if the user only has one account, unlinking will be prevented to stop account lockout (unless allowUnlinkingAll is set to true).
+
+auth.ts
+
+export const auth = betterAuth({
+    account: {
+        accountLinking: {
+            allowUnlinkingAll: true
+        }
+    },
+});

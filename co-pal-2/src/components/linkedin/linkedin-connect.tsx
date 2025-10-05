@@ -8,19 +8,20 @@ import { IconBrandLinkedin } from "@tabler/icons-react";
 import { authClient } from "@/lib/auth-client";
 
 export function LinkedInConnect() {
-    const [isConnecting, setIsConnecting] = useState(false);
+    const [isLinking, setIsLinking] = useState(false);
 
     const handleConnect = async () => {
-        setIsConnecting(true);
+        setIsLinking(true);
         try {
-            // Use Better Auth LinkedIn social sign-in
-            await authClient.signIn.social({
-                provider: "linkedin"
+            // Use Better Auth LinkedIn account linking
+            await authClient.linkSocial({
+                provider: "linkedin",
+                callbackURL: "/profile"
             });
         } catch (error) {
-            console.error("LinkedIn connection error:", error);
-            toast.error("Failed to connect to LinkedIn. Please try again.");
-            setIsConnecting(false);
+            console.error("LinkedIn account linking error:", error);
+            toast.error("Failed to link LinkedIn account. Please try again.");
+            setIsLinking(false);
         }
     };
 
@@ -32,24 +33,24 @@ export function LinkedInConnect() {
                     LinkedIn Integration
                 </CardTitle>
                 <CardDescription>
-                    Connect your LinkedIn account to share your professional achievements, network with other developers, and showcase your projects.
+                    Link your LinkedIn account to your profile to share your professional achievements, network with other developers, and showcase your projects.
                 </CardDescription>
             </CardHeader>
             <CardContent>
                 <Button
                     onClick={handleConnect}
-                    disabled={isConnecting}
+                    disabled={isLinking}
                     className="w-full bg-blue-600 hover:bg-blue-700 text-white"
                 >
-                    {isConnecting ? (
+                    {isLinking ? (
                         <>
                             <div className="w-4 h-4 mr-2 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
-                            Connecting...
+                            Linking...
                         </>
                     ) : (
                         <>
                             <IconBrandLinkedin className="w-4 h-4 mr-2" />
-                            Connect LinkedIn
+                            Link LinkedIn Account
                         </>
                     )}
                 </Button>
