@@ -16,8 +16,8 @@ model User {
   createdAt          DateTime     @default(now())
   updatedAt          DateTime     @default(now()) @updatedAt
   onBoardingComplete Boolean      @default(false)
-  preferencesSet     Boolean      @default(false)
   connectBalance     Int          @default(0)
+  preferencesSet     Boolean      @default(false)
   Message            Message[]
   accounts           Account[]
   github             GitHub?
