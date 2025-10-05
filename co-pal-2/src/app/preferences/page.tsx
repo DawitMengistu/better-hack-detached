@@ -9,18 +9,12 @@ import {
 } from "@/lib/schemas/preferences";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+
 import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
-import { techStackOptions, countries, occupations } from "@/utils/constants";
+import { TECH_STACK_OPTIONS, OCCUPATIONS, COUNTRIES } from "@/utils/constants";
 import { savePreferences } from "./actions";
 import { authClient } from "@/lib/auth-client";
 
@@ -30,6 +24,8 @@ export default function PreferencesPage() {
   const [timeCommitment, setTimeCommitment] = useState<[number, number]>([
     5, 20,
   ]);
+
+  const { data: session, isPending } = authClient.useSession();
 
   const {
     register,
@@ -59,7 +55,7 @@ export default function PreferencesPage() {
 
   const onSubmit = async (data: PreferencesFormData) => {
     try {
-	 const { data: session, isPending } = authClient.useSession();
+	 
       if (!session?.user) throw new Error("Not authenticated");
 
       await savePreferences(session.user.id, data);
@@ -173,7 +169,7 @@ export default function PreferencesPage() {
 
           <SearchableMultiSelect
             label="Tech Stack"
-            options={techStackOptions}
+            options={TECH_STACK_OPTIONS}
             selected={selectedTechStack}
             onChange={(next) => {
               setSelectedTechStack(next);
@@ -184,7 +180,7 @@ export default function PreferencesPage() {
 
           <SearchableMultiSelect
             label="Country Preferences"
-            options={countries}
+            options={COUNTRIES}
             selected={(watch("countryPreferences") as string[]) || []}
             onChange={(next) => setValue("countryPreferences", next)}
             placeholder="Search countries"
@@ -192,7 +188,7 @@ export default function PreferencesPage() {
 
           <SearchableMultiSelect
             label="Occupations"
-            options={occupations}
+            options={OCCUPATIONS}
             selected={(watch("occupations") as string[]) || []}
             onChange={(next) => setValue("occupations", next)}
             placeholder="Search occupations"

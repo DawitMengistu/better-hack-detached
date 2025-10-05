@@ -56,7 +56,6 @@ export default function FeedPage() {
 
   return (
       <>
-      <GitHubStatsDisplay />
           {/* Feed Content */}
           <div className="space-y-6">
             <div className="grid gap-6">

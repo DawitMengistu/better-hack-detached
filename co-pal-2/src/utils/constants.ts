@@ -1,5 +1,5 @@
 
-export const techStackOptions = [
+export const TECH_STACK_OPTIONS = [
     "JavaScript",
     "TypeScript",
     "React",
@@ -54,7 +54,7 @@ export const techStackOptions = [
     "Ant Design",
   ]
   
-  export const countries = [
+  export const COUNTRIES = [
     "United States",
     "Canada",
     "United Kingdom",
@@ -102,7 +102,7 @@ export const techStackOptions = [
     "Other",
   ]
 
-  export const occupations = [
+  export const OCCUPATIONS = [
     "Software Engineer",
     "Frontend Developer",
     "Backend Developer",

@@ -14,39 +14,10 @@ import { onboardingSchema, type OnboardingFormData } from "@/lib/schemas/onboard
 import { cn } from "@/lib/utils"
 import { ChevronLeft, ChevronRight, Github, Linkedin, Clock } from "lucide-react"
 import { authClient } from "@/lib/auth-client"
-<<<<<<< HEAD
+
 import { createProfileRecord, saveGitHubData } from "./actions"
+import { COUNTRIES, OCCUPATIONS, TECH_STACK_OPTIONS } from "@/utils/constants"
 import { useGitHubStats } from "@/hooks/use-github-stats"
-
-// Constants
-const TECH_STACK_OPTIONS = [
-  "JavaScript", "TypeScript", "React", "Next.js", "Node.js", "Python", "Java", "C#", "Go", "Rust",
-  "PHP", "Ruby", "Swift", "Kotlin", "Dart", "Flutter", "React Native", "Vue.js", "Angular", "Svelte",
-  "Express.js", "FastAPI", "Django", "Flask", "Spring Boot", "Laravel", "Rails", "ASP.NET", "GraphQL",
-  "REST API", "PostgreSQL", "MySQL", "MongoDB", "Redis", "Docker", "Kubernetes", "AWS", "Azure", "GCP",
-  "Firebase", "Supabase", "Prisma", "Sequelize", "TypeORM", "Jest", "Cypress", "Playwright", "Tailwind CSS",
-  "Bootstrap", "Material-UI", "Chakra UI", "Ant Design"
-]
-
-const COUNTRIES = [
-  "United States", "Canada", "United Kingdom", "Germany", "France", "Spain", "Italy", "Netherlands",
-  "Sweden", "Norway", "Denmark", "Finland", "Switzerland", "Austria", "Belgium", "Ireland", "Portugal",
-  "Poland", "Czech Republic", "Hungary", "Romania", "Bulgaria", "Croatia", "Slovenia", "Slovakia",
-  "Estonia", "Latvia", "Lithuania", "Australia", "New Zealand", "Japan", "South Korea", "Singapore",
-  "India", "China", "Brazil", "Argentina", "Chile", "Mexico", "South Africa", "Israel", "Turkey", "Russia",
-  "Ukraine", "Other"
-]
-
-const OCCUPATIONS = [
-  "Software Engineer", "Frontend Developer", "Backend Developer", "Full Stack Developer", "DevOps Engineer",
-  "Data Scientist", "Data Engineer", "Machine Learning Engineer", "AI Engineer", "Mobile Developer",
-  "Game Developer", "Web Developer", "UI/UX Designer", "Product Manager", "Project Manager",
-  "Technical Lead", "Engineering Manager", "CTO", "CEO/Founder", "Freelancer", "Student",
-  "Bootcamp Graduate", "Career Changer", "Consultant", "Other"
-]
-=======
-import { createProfileRecord } from "./actions"
-import { countries, techStackOptions, occupations } from "@/utils/constants"
 
 
 
@@ -63,12 +34,6 @@ import { countries, techStackOptions, occupations } from "@/utils/constants"
 //   occupation: string;
 //   openForProjects: boolean;
 // };
-
-
-
-
-
->>>>>>> aa5d59dd42f4e0462fdd43a5819b523f8a0c5ce6
 
 // Types
 interface SocialConnections {
@@ -167,11 +132,8 @@ const NavigationButtons = ({
 )
 
 export default function OnboardingPage() {
-<<<<<<< HEAD
-  // State
-=======
   const router = useRouter()
->>>>>>> aa5d59dd42f4e0462fdd43a5819b523f8a0c5ce6
+
   const [currentPage, setCurrentPage] = useState(1)
   const [selectedTechStack, setSelectedTechStack] = useState<string[]>([])
   const [timeCommitment, setTimeCommitment] = useState<[number, number]>([10, 40])
@@ -205,26 +167,11 @@ export default function OnboardingPage() {
   // Handlers
   const handleSubmitForm = async (data: OnboardingFormData) => {
     try {
-<<<<<<< HEAD
       console.log("Onboarding data received for submission:", data)
       const newRecord = await createProfileRecord(data, session?.user?.id || "")
       console.log("✅ Prisma insertion complete. New Record:", newRecord)
       alert("Onboarding completed successfully!")
-=======
-      console.log("Onboarding data received for submission:", data);
-  
-      // 1. Execute the Prisma data insertion operation
-      const newRecord = await createProfileRecord(data, session?.user?.id || "");
-  
-  // 2. Log the result from the database
-  console.log("✅ Prisma insertion complete. New Record:", newRecord);
 
-  // Redirect the user to preferences so they can set partner preferences
-  router.push("/preferences")
-  // Show a quick toast/alert for feedback
-  alert("Onboarding completed successfully! Redirecting to preferences...");
-      
->>>>>>> aa5d59dd42f4e0462fdd43a5819b523f8a0c5ce6
     } catch (error) {
       console.error("❌ Error submitting onboarding:", error)
       alert("There was an error submitting your information. Please try again.")
@@ -251,7 +198,7 @@ export default function OnboardingPage() {
     
     try {
       console.log("🌄👉: ", platform)
-      if (platform === 'github') {
+      if (platform === 'github' && githubStats) {
         await saveGitHubData(githubStats, session?.user?.id || "")
         console.log("🌄✅👉: GitHub data saved")
       }
