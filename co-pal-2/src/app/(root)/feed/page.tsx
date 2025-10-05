@@ -8,83 +8,58 @@ import { SwipeableCardStack } from "@/components/feed/SwipeableCardStack";
 const sampleUsers: UserProfile[] = [
   {
     id: "1",
-    name: "Alex Chen",
-    bio: "Full-stack developer passionate about React and Node.js. Love building scalable applications and exploring new technologies.",
-    avatar: "",
-    occupation: "Full-Stack Developer",
-    techStack: ["React", "Node.js", "TypeScript", "PostgreSQL", "AWS"],
-    age: 28,
-    country: "United States"
+    name: "Betelhem Dessie",
+    bio: "Innovative web and mobile developer from Ethiopia, passionate about creating technology solutions that bridge gaps in education and accessibility. Founder of robotics programs for young girls.",
+    avatar: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Betelhem_Dessie.jpg/256px-Betelhem_Dessie.jpg",
+    occupation: "Web & Mobile Developer",
+    techStack: ["React", "React Native", "Node.js", "Python", "AI/ML"],
+    age: 23,
+    country: "Ethiopia",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Betelhem_Dessie.jpg/256px-Betelhem_Dessie.jpg"
   },
   {
     id: "2",
-    name: "Sarah Johnson",
-    bio: "Frontend specialist with expertise in modern JavaScript frameworks. Creating beautiful user experiences with React and Vue.",
-    avatar: "",
-    occupation: "Frontend Developer",
-    techStack: ["React", "Vue.js", "JavaScript", "CSS3", "Figma"],
-    age: 26,
-    country: "Canada"
+    name: "Timnit Gebru",
+    bio: "Leading AI researcher and ethicist, former co-lead of Google's Ethical AI team. Pioneering work on algorithmic bias and promoting diversity in AI research and development.",
+    avatar: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Timnit_Gebru.jpg/256px-Timnit_Gebru.jpg",
+    occupation: "AI Researcher / Ethicist",
+    techStack: ["Python", "TensorFlow", "PyTorch", "Machine Learning", "Ethics"],
+    age: 39,
+    country: "Ethiopia/US",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Timnit_Gebru.jpg/256px-Timnit_Gebru.jpg"
   },
   {
     id: "3",
-    name: "Marcus Rodriguez",
-    bio: "Backend engineer focused on microservices and cloud architecture. Passionate about system design and performance optimization.",
-    avatar: "",
-    occupation: "Backend Engineer",
-    techStack: ["Python", "Go", "Docker", "Kubernetes", "MongoDB"],
-    age: 32,
-    country: "Spain"
+    name: "Henok Tsegaye",
+    bio: "Full-stack developer with expertise in modern web technologies. Building scalable applications and contributing to open-source projects that make development more accessible.",
+    avatar: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/Henok_Tsegaye.jpg/256px-Henok_Tsegaye.jpg",
+    occupation: "Full-stack Developer",
+    techStack: ["JavaScript", "React", "Node.js", "MongoDB", "AWS"],
+    age: 28,
+    country: "Ethiopia",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/Henok_Tsegaye.jpg/256px-Henok_Tsegaye.jpg"
   },
   {
     id: "4",
-    name: "Emily Davis",
-    bio: "UI/UX designer creating beautiful and intuitive user experiences. Specializing in mobile app design and user research.",
-    avatar: "",
-    occupation: "UI/UX Designer",
-    techStack: ["Figma", "Sketch", "Adobe XD", "Principle", "InVision"],
-    age: 29,
-    country: "United Kingdom"
+    name: "Lewam Kefela",
+    bio: "Venture capital professional and design strategist, focusing on investing in African tech startups. Combining design thinking with business acumen to drive innovation.",
+    avatar: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Lewam_Kefela.jpg/256px-Lewam_Kefela.jpg",
+    occupation: "Venture / Design & Investment",
+    techStack: ["Design Thinking", "Figma", "Analytics", "Business Strategy", "Investment"],
+    age: 31,
+    country: "Ethiopia",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Lewam_Kefela.jpg/256px-Lewam_Kefela.jpg"
   },
   {
     id: "5",
-    name: "David Kim",
-    bio: "DevOps engineer passionate about automation and infrastructure. Building reliable CI/CD pipelines and cloud solutions.",
-    avatar: "",
-    occupation: "DevOps Engineer",
-    techStack: ["AWS", "Terraform", "Jenkins", "Docker", "Linux"],
-    age: 30,
-    country: "South Korea"
-  },
-  {
-    id: "6",
-    name: "Lisa Wang",
-    bio: "Data scientist with expertise in machine learning and analytics. Turning data into actionable insights for businesses.",
-    avatar: "",
-    occupation: "Data Scientist",
-    techStack: ["Python", "TensorFlow", "Pandas", "SQL", "Jupyter"],
-    age: 27,
-    country: "China"
-  },
-  {
-    id: "7",
-    name: "James Thompson",
-    bio: "Mobile developer creating cross-platform apps with React Native and Flutter. Love building apps that make a difference.",
-    avatar: "",
-    occupation: "Mobile Developer",
-    techStack: ["React Native", "Flutter", "Swift", "Kotlin", "Firebase"],
-    age: 31,
-    country: "Australia"
-  },
-  {
-    id: "8",
-    name: "Maria Garcia",
-    bio: "Product manager with a technical background. Bridging the gap between engineering and business to deliver great products.",
-    avatar: "",
-    occupation: "Product Manager",
-    techStack: ["Agile", "Scrum", "Jira", "Analytics", "SQL"],
-    age: 33,
-    country: "Mexico"
+    name: "Yadesa Bojia",
+    bio: "Creative graphic designer and visual artist, known for blending traditional Ethiopian art with modern design principles. Creating visual narratives that celebrate African culture.",
+    avatar: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Yadesa_Bojia.jpg/256px-Yadesa_Bojia.jpg",
+    occupation: "Graphic Designer / Artist",
+    techStack: ["Photoshop", "Illustrator", "InDesign", "Traditional Art", "Branding"],
+    age: 35,
+    country: "Ethiopia",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Yadesa_Bojia.jpg/256px-Yadesa_Bojia.jpg"
   }
 ];
 
