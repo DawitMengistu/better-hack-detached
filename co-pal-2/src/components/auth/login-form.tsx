@@ -111,6 +111,7 @@ export function LoginForm() {
                         onClick={async () => {
                             setIsGitHubLoading(true);
                             try {
+                                // For login form, use sign-in (creates new account or links existing)
                                 await authClient.signIn.social({
                                     provider: "github",
                                     callbackURL: "/feed"
