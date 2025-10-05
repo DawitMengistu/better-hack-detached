@@ -115,10 +115,18 @@ export default function FeedPage() {
 
           // Filter out current user (assuming first user is current user for demo)
           const fetchedCurrentUserId = data.users[0]?.id;
-          const otherUsers = data.users.filter((user: any) => user.id !== fetchedCurrentUserId);
+          const allUsersFromDB = data.users;
+          const otherUsers = allUsersFromDB.filter((user: any) => user.id !== fetchedCurrentUserId);
 
           console.log(`👤 [FEED] Current user: ${fetchedCurrentUserId}`);
-          console.log(`👥 [FEED] Other users: ${otherUsers.length}`);
+          console.log(`👥 [FEED] Total users from DB: ${allUsersFromDB.length}`);
+          console.log(`🚫 [FEED] Filtering out current user (${fetchedCurrentUserId})`);
+          console.log(`✅ [FEED] Other users after filtering: ${otherUsers.length}`);
+
+          // Log the filtered users
+          otherUsers.forEach((user: any, index: number) => {
+            console.log(`   ${index + 1}. ${user.name} (${user.id})`);
+          });
 
           // Update current user ID state
           if (fetchedCurrentUserId) {
@@ -126,7 +134,7 @@ export default function FeedPage() {
             setCurrentUserId(fetchedCurrentUserId);
           }
 
-          // Take first 2 other users and create profiles for them
+          // Take first 2 other users and create profiles for them (excluding current user)
           const realUsers: UserProfile[] = otherUsers.slice(0, 2).map((user: any, index: number) => ({
             id: user.id,
             name: user.name,
@@ -142,7 +150,12 @@ export default function FeedPage() {
           console.log(`✅ [FEED] Created ${realUsers.length} real user profiles`);
 
           // Add real users to the beginning of the sample users
-          setAllUsers([...realUsers, ...sampleUsers]);
+          // Double-check: ensure current user is not in the final array
+          const finalUsers = [...realUsers, ...sampleUsers];
+          const filteredFinalUsers = finalUsers.filter(user => user.id !== fetchedCurrentUserId);
+
+          console.log(`🎯 [FEED] Final users count: ${filteredFinalUsers.length} (after final filtering)`);
+          setAllUsers(filteredFinalUsers);
 
         } else {
           console.log("⚠️ [FEED] No real users found, using only dummy data");

@@ -86,7 +86,7 @@ export default function MatchesPage() {
 
     // Fetch real matches from backend
     useEffect(() => {
-        const fetchMatches = async () => {
+        const fetchCurrentUserAndMatches = async () => {
             try {
                 // First, get current user ID
                 const usersResponse = await fetch('/api/test-data/users');
@@ -127,7 +127,7 @@ export default function MatchesPage() {
             }
         };
 
-        fetchMatches();
+        fetchCurrentUserAndMatches();
     }, []);
 
     return (
