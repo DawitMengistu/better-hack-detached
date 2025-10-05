@@ -141,8 +141,10 @@ export async function GET(request: NextRequest) {
       console.log("⚠️ No user session found, skipping database save");
     }
 
-    // Redirect to home page
-    return NextResponse.redirect(new URL("/", request.url));
+    // Redirect to profile page where WakaTime component is located
+    return NextResponse.redirect(
+      new URL("/profile?wakatime=connected", request.url)
+    );
   } catch (error) {
     console.error("WakaTime OAuth callback error:", error);
     return NextResponse.redirect(
