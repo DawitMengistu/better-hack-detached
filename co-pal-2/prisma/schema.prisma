@@ -19,12 +19,13 @@ model User {
   connectBalance     Int       @default(0)
   Message            Message[]
   accounts           Account[]
-  github             github?
+  github             GitHub?
   linkedin           LinkedIn?
   profile            Profile?
   sessions           Session[]
   wakatime           WakaTime?
   Chat               Chat[]    @relation("UserToChat")
+  preferences       Preferences?
 
   @@map("user")
 }
@@ -105,6 +106,22 @@ model WakaTime {
   @@map("wakatime")
 }
 
+model GitHub {
+  id                   String @id @default(cuid())
+  userId               String @unique
+  totalContributions   Int?
+  activeWeeks          Int?
+  totalWeeks           Int?
+  longestStreak        Int?
+  averageWeeklyCommits Int?
+  topLanguage          String
+  totalStars           Int?
+  totalFollowers       Int?
+  user                 User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("github")
+}
+
 model LinkedIn {
   id           String   @id @default(cuid())
   userId       String   @unique
@@ -140,16 +157,21 @@ model Message {
   user      User     @relation(fields: [senderId], references: [id])
 }
 
-model github {
-  id                   String @id
-  userId               String @unique
-  totalContributions   Int?
-  activeWeeks          Int?
-  totalWeeks           Int?
-  longestStreak        Int?
-  averageWeeklyCommits Int?
-  topLanguage          String
-  totalStars           Int?
-  totalFollowers       Int?
-  user                 User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+
+model Preferences {
+  id               String   @id @default(cuid())
+  userId           String   @unique
+  preferredGenders String[]
+  ageRange         Int[]
+  timeCommitment   Int[]
+  techStack        String[]
+  countryPreferences String[]
+  occupations      String[]
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @default(now()) @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("preferences")
 }

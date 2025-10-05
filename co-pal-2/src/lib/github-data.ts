@@ -365,10 +365,10 @@ export async function fetchGitHubStats(): Promise<GitHubStats> {
  */
 export function formatGitHubStats(stats: GitHubStats): {
   name: string;
-  joined: string;
   totalContributions: number;
-  activeWeeks: string;
-  longestStreak: string;
+  activeWeeks: number;
+  totalWeeks: number;
+  longestStreak: number;
   averageWeeklyCommits: number;
   topLanguage: string;
   totalStars: number;
@@ -376,10 +376,10 @@ export function formatGitHubStats(stats: GitHubStats): {
 } {
   return {
     name: stats.name,
-    joined: `${stats.yearsOnGitHub} years ago`,
     totalContributions: stats.totalContributions,
-    activeWeeks: `${stats.activeWeeks} / ${stats.totalWeeks}`,
-    longestStreak: `${stats.longestStreak} days`,
+    activeWeeks: stats.activeWeeks,
+    totalWeeks: stats.totalWeeks,
+    longestStreak: stats.longestStreak,
     averageWeeklyCommits: stats.averageWeeklyCommits,
     topLanguage: stats.topLanguage,
     totalStars: stats.totalStars,

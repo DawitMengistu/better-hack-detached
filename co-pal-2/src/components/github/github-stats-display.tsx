@@ -88,10 +88,6 @@ export function GitHubStatsDisplay() {
           </CardHeader>
           <CardContent className="space-y-2">
             <div className="flex justify-between">
-              <span className="text-sm text-muted-foreground">Joined</span>
-              <span className="text-sm font-medium">{formattedStats.joined}</span>
-            </div>
-            <div className="flex justify-between">
               <span className="text-sm text-muted-foreground">Followers</span>
               <span className="text-sm font-medium">{formattedStats.totalFollowers}</span>
             </div>
