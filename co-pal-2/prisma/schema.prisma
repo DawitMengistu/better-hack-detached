@@ -8,7 +8,6 @@ datasource db {
 }
 
 model User {
-
   id                 String    @id
   name               String
   email              String    @unique
@@ -17,12 +16,14 @@ model User {
   createdAt          DateTime  @default(now())
   updatedAt          DateTime  @default(now()) @updatedAt
   onBoardingComplete Boolean   @default(false)
+  connectBalance     Int       @default(0)
   Message            Message[]
   accounts           Account[]
+  github             GitHub?
+  linkedin           LinkedIn?
   profile            Profile?
   sessions           Session[]
   wakatime           WakaTime?
-  linkedin           LinkedIn?
   Chat               Chat[]    @relation("UserToChat")
 
   @@map("user")
@@ -102,6 +103,22 @@ model WakaTime {
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("wakatime")
+}
+
+model GitHub {
+  id                   String @id @default(cuid())
+  userId               String @unique
+  totalContributions   Int?
+  activeWeeks          Int?
+  totalWeeks           Int?
+  longestStreak        Int?
+  averageWeeklyCommits Int?
+  topLanguage          String
+  totalStars           Int?
+  totalFollowers       Int?
+  user                 User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("github")
 }
 
 model LinkedIn {

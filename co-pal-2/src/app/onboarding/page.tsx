@@ -13,192 +13,147 @@ import { onboardingSchema, type OnboardingFormData } from "@/lib/schemas/onboard
 import { cn } from "@/lib/utils"
 import { ChevronLeft, ChevronRight, Github, Linkedin, Clock } from "lucide-react"
 import { authClient } from "@/lib/auth-client"
-import { createProfileRecord } from "./actions"
+import { createProfileRecord, saveGitHubData } from "./actions"
+import { useGitHubStats } from "@/hooks/use-github-stats"
 
-
-
-// The expected structure of the form data
-// type OnboardingFormData = {
-//   name: string;
-//   email: string;
-//   id: string; 
-//   age: number;
-//   gender: string;
-//   timeCommitment: number[];
-//   techStack: string[];
-//   country: string;
-//   occupation: string;
-//   openForProjects: boolean;
-// };
-
-
-
-const techStackOptions = [
-  "JavaScript",
-  "TypeScript",
-  "React",
-  "Next.js",
-  "Node.js",
-  "Python",
-  "Java",
-  "C#",
-  "Go",
-  "Rust",
-  "PHP",
-  "Ruby",
-  "Swift",
-  "Kotlin",
-  "Dart",
-  "Flutter",
-  "React Native",
-  "Vue.js",
-  "Angular",
-  "Svelte",
-  "Express.js",
-  "FastAPI",
-  "Django",
-  "Flask",
-  "Spring Boot",
-  "Laravel",
-  "Rails",
-  "ASP.NET",
-  "GraphQL",
-  "REST API",
-  "PostgreSQL",
-  "MySQL",
-  "MongoDB",
-  "Redis",
-  "Docker",
-  "Kubernetes",
-  "AWS",
-  "Azure",
-  "GCP",
-  "Firebase",
-  "Supabase",
-  "Prisma",
-  "Sequelize",
-  "TypeORM",
-  "Jest",
-  "Cypress",
-  "Playwright",
-  "Tailwind CSS",
-  "Bootstrap",
-  "Material-UI",
-  "Chakra UI",
-  "Ant Design",
+// Constants
+const TECH_STACK_OPTIONS = [
+  "JavaScript", "TypeScript", "React", "Next.js", "Node.js", "Python", "Java", "C#", "Go", "Rust",
+  "PHP", "Ruby", "Swift", "Kotlin", "Dart", "Flutter", "React Native", "Vue.js", "Angular", "Svelte",
+  "Express.js", "FastAPI", "Django", "Flask", "Spring Boot", "Laravel", "Rails", "ASP.NET", "GraphQL",
+  "REST API", "PostgreSQL", "MySQL", "MongoDB", "Redis", "Docker", "Kubernetes", "AWS", "Azure", "GCP",
+  "Firebase", "Supabase", "Prisma", "Sequelize", "TypeORM", "Jest", "Cypress", "Playwright", "Tailwind CSS",
+  "Bootstrap", "Material-UI", "Chakra UI", "Ant Design"
 ]
 
-const countries = [
-  "United States",
-  "Canada",
-  "United Kingdom",
-  "Germany",
-  "France",
-  "Spain",
-  "Italy",
-  "Netherlands",
-  "Sweden",
-  "Norway",
-  "Denmark",
-  "Finland",
-  "Switzerland",
-  "Austria",
-  "Belgium",
-  "Ireland",
-  "Portugal",
-  "Poland",
-  "Czech Republic",
-  "Hungary",
-  "Romania",
-  "Bulgaria",
-  "Croatia",
-  "Slovenia",
-  "Slovakia",
-  "Estonia",
-  "Latvia",
-  "Lithuania",
-  "Australia",
-  "New Zealand",
-  "Japan",
-  "South Korea",
-  "Singapore",
-  "India",
-  "China",
-  "Brazil",
-  "Argentina",
-  "Chile",
-  "Mexico",
-  "South Africa",
-  "Israel",
-  "Turkey",
-  "Russia",
-  "Ukraine",
-  "Other",
+const COUNTRIES = [
+  "United States", "Canada", "United Kingdom", "Germany", "France", "Spain", "Italy", "Netherlands",
+  "Sweden", "Norway", "Denmark", "Finland", "Switzerland", "Austria", "Belgium", "Ireland", "Portugal",
+  "Poland", "Czech Republic", "Hungary", "Romania", "Bulgaria", "Croatia", "Slovenia", "Slovakia",
+  "Estonia", "Latvia", "Lithuania", "Australia", "New Zealand", "Japan", "South Korea", "Singapore",
+  "India", "China", "Brazil", "Argentina", "Chile", "Mexico", "South Africa", "Israel", "Turkey", "Russia",
+  "Ukraine", "Other"
 ]
 
-const occupations = [
-  "Software Engineer",
-  "Frontend Developer",
-  "Backend Developer",
-  "Full Stack Developer",
-  "DevOps Engineer",
-  "Data Scientist",
-  "Data Engineer",
-  "Machine Learning Engineer",
-  "AI Engineer",
-  "Mobile Developer",
-  "Game Developer",
-  "Web Developer",
-  "UI/UX Designer",
-  "Product Manager",
-  "Project Manager",
-  "Technical Lead",
-  "Engineering Manager",
-  "CTO",
-  "CEO/Founder",
-  "Freelancer",
-  "Student",
-  "Bootcamp Graduate",
-  "Career Changer",
-  "Consultant",
-  "Other",
+const OCCUPATIONS = [
+  "Software Engineer", "Frontend Developer", "Backend Developer", "Full Stack Developer", "DevOps Engineer",
+  "Data Scientist", "Data Engineer", "Machine Learning Engineer", "AI Engineer", "Mobile Developer",
+  "Game Developer", "Web Developer", "UI/UX Designer", "Product Manager", "Project Manager",
+  "Technical Lead", "Engineering Manager", "CTO", "CEO/Founder", "Freelancer", "Student",
+  "Bootcamp Graduate", "Career Changer", "Consultant", "Other"
 ]
 
-
-
-// Dummy function to simulate social connection status
-const checkSocialConnections = async (): Promise<{ github: boolean; wakatime: boolean; linkedin: boolean }> => {
-  // Simulate API call delay
-  await new Promise(resolve => setTimeout(resolve, 500))
-  
-  // For now, return dummy data - in real app, this would check database
-  return {
-    github: false,
-    wakatime: false,
-    linkedin: false
-  }
+// Types
+interface SocialConnections {
+  github: boolean
+  wakatime: boolean
+  linkedin: boolean
 }
 
+type SocialPlatform = 'github' | 'wakatime' | 'linkedin'
 
+
+
+// Sub-components
+const ProgressIndicator = ({ currentPage }: { currentPage: number }) => (
+  <div className="mb-8">
+    <div className="flex items-center justify-center space-x-2">
+      {[1, 2, 3, 4].map((page) => (
+        <div
+          key={page}
+          className={cn(
+            "w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium",
+            page <= currentPage
+              ? "bg-primary text-primary-foreground"
+              : "bg-muted text-muted-foreground"
+          )}
+        >
+          {page}
+        </div>
+      ))}
+    </div>
+    <div className="text-center mt-2">
+      <span className="text-sm text-muted-foreground">
+        Step {currentPage} of 4
+      </span>
+    </div>
+  </div>
+)
+
+const PageHeader = ({ title, subtitle }: { title: string; subtitle: string }) => (
+  <div className="text-center mb-8">
+    <h1 className="text-3xl font-bold text-foreground">{title}</h1>
+    <p className="text-muted-foreground mt-2">{subtitle}</p>
+  </div>
+)
+
+const FormField = ({ 
+  label, 
+  error, 
+  children 
+}: { 
+  label: string; 
+  error?: string; 
+  children: React.ReactNode 
+}) => (
+  <div className="space-y-2">
+    <Label>{label}</Label>
+    {children}
+    {error && <p className="text-sm text-destructive">{error}</p>}
+  </div>
+)
+
+const NavigationButtons = ({ 
+  currentPage, 
+  onBack, 
+  onNext, 
+  isSubmitting, 
+  canComplete 
+}: {
+  currentPage: number
+  onBack: () => void
+  onNext: () => void
+  isSubmitting: boolean
+  canComplete: boolean
+}) => (
+  <div className="flex justify-between mt-8">
+    {currentPage > 1 ? (
+      <Button type="button" variant="outline" onClick={onBack} className="flex items-center space-x-2">
+        <ChevronLeft className="w-4 h-4" />
+        <span>Back</span>
+      </Button>
+    ) : (
+      <div />
+    )}
+
+    {currentPage < 4 ? (
+      <Button type="button" onClick={onNext} className="flex items-center space-x-2">
+        <span>Next</span>
+        <ChevronRight className="w-4 h-4" />
+      </Button>
+    ) : (
+      <Button type="submit" disabled={isSubmitting || !canComplete} className="flex items-center space-x-2">
+        {isSubmitting ? "Completing..." : "Complete Onboarding"}
+      </Button>
+    )}
+  </div>
+)
 
 export default function OnboardingPage() {
+  // State
   const [currentPage, setCurrentPage] = useState(1)
   const [selectedTechStack, setSelectedTechStack] = useState<string[]>([])
   const [timeCommitment, setTimeCommitment] = useState<[number, number]>([10, 40])
-  const [socialConnections, setSocialConnections] = useState<{ github: boolean; wakatime: boolean; linkedin: boolean }>({
+  const [socialConnections, setSocialConnections] = useState<SocialConnections>({
     github: false,
     wakatime: false,
     linkedin: false
   })
   const [isCheckingSocials, setIsCheckingSocials] = useState(false)
 
-  const { 
-    data: session, 
-    isPending, //loading state
-    error, //error object
-    refetch //refetch the session
-} = authClient.useSession() 
-
+  // Hooks
+  const { data: session } = authClient.useSession()
+  const { stats: githubStats } = useGitHubStats()
 
   const {
     register,
@@ -216,23 +171,18 @@ export default function OnboardingPage() {
     },
   })
 
-  const onSubmit = async (data: OnboardingFormData) => {
+  // Handlers
+  const handleSubmitForm = async (data: OnboardingFormData) => {
     try {
-      console.log("Onboarding data received for submission:", data);
-  
-      // 1. Execute the Prisma data insertion operation
-      const newRecord = await createProfileRecord(data, session?.user?.id || "");
-  
-      // 2. Log the result from the database
-      console.log("✅ Prisma insertion complete. New Record:", newRecord);
-  
-      alert("Onboarding completed successfully!");
-      
+      console.log("Onboarding data received for submission:", data)
+      const newRecord = await createProfileRecord(data, session?.user?.id || "")
+      console.log("✅ Prisma insertion complete. New Record:", newRecord)
+      alert("Onboarding completed successfully!")
     } catch (error) {
-      console.error("❌ Error submitting onboarding:", error);
-      alert("There was an error submitting your information. Please try again.");
+      console.error("❌ Error submitting onboarding:", error)
+      alert("There was an error submitting your information. Please try again.")
     }
-  };
+  }
 
   const handleTechStackToggle = (tech: string) => {
     const newTechStack = selectedTechStack.includes(tech)
@@ -249,13 +199,18 @@ export default function OnboardingPage() {
     setValue("timeCommitment", newValue)
   }
 
-  const handleSocialConnect = async (platform: 'github' | 'wakatime' | 'linkedin') => {
+  const handleSocialConnect = async (platform: SocialPlatform) => {
     setIsCheckingSocials(true)
+    
     try {
-      // Simulate connection process
+      console.log("🌄👉: ", platform)
+      if (platform === 'github') {
+        await saveGitHubData(githubStats, session?.user?.id || "")
+        console.log("🌄✅👉: GitHub data saved")
+      }
+      
       await new Promise(resolve => setTimeout(resolve, 1000))
       
-      // For now, just toggle the state - in real app, this would handle OAuth
       setSocialConnections(prev => ({
         ...prev,
         [platform]: !prev[platform]
@@ -268,72 +223,53 @@ export default function OnboardingPage() {
   }
 
   const handleNext = async () => {
-    let fieldsToValidate: (keyof OnboardingFormData)[] = []
-    
-    if (currentPage === 1) {
-      fieldsToValidate = ["name", "age", "gender"]
-    } else if (currentPage === 2) {
-      fieldsToValidate = ["timeCommitment", "country", "occupation"]
-    } else if (currentPage === 3) {
-      fieldsToValidate = ["techStack"]
+    const validationFields: Record<number, (keyof OnboardingFormData)[]> = {
+      1: ["name", "age", "gender"],
+      2: ["timeCommitment", "country", "occupation"],
+      3: ["techStack"]
     }
     
+    const fieldsToValidate = validationFields[currentPage] || []
     const isValid = await trigger(fieldsToValidate)
+    
     if (isValid) {
       setCurrentPage(currentPage + 1)
     }
   }
 
-  const handleBack = () => {
-    setCurrentPage(currentPage - 1)
-  }
+  const handleBack = () => setCurrentPage(currentPage - 1)
 
   const canCompleteOnboarding = () => {
     const connectedCount = Object.values(socialConnections).filter(Boolean).length
     return connectedCount >= 2
   }
 
+  // Page renderers
   const renderPage1 = () => (
     <div className="space-y-6">
-      <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-foreground">Tell us about yourself</h1>
-        <p className="text-muted-foreground mt-2">
-          Let's start with some basic information
-        </p>
-      </div>
+      <PageHeader 
+        title="Tell us about yourself" 
+        subtitle="Let's start with some basic information" 
+      />
 
-      {/* Name */}
-      <div className="space-y-2">
-        <Label htmlFor="name">Full Name *</Label>
+      <FormField label="Full Name *" error={errors.name?.message}>
         <Input
-          id="name"
           placeholder="Enter your full name"
           {...register("name")}
           className={errors.name ? "border-destructive" : ""}
         />
-        {errors.name && (
-          <p className="text-sm text-destructive">{errors.name.message}</p>
-        )}
-      </div>
+      </FormField>
 
-      {/* Age */}
-      <div className="space-y-2">
-        <Label htmlFor="age">Age *</Label>
+      <FormField label="Age *" error={errors.age?.message}>
         <Input
-          id="age"
           type="number"
           placeholder="Enter your age"
           {...register("age", { valueAsNumber: true })}
           className={errors.age ? "border-destructive" : ""}
         />
-        {errors.age && (
-          <p className="text-sm text-destructive">{errors.age.message}</p>
-        )}
-      </div>
+      </FormField>
 
-      {/* Gender */}
-      <div className="space-y-2">
-        <Label>Gender *</Label>
+      <FormField label="Gender *" error={errors.gender?.message}>
         <Select onValueChange={(value) => setValue("gender", value as any)}>
           <SelectTrigger className={errors.gender ? "border-destructive" : ""}>
             <SelectValue placeholder="Select your gender" />
@@ -345,25 +281,18 @@ export default function OnboardingPage() {
             <SelectItem value="prefer-not-to-say">Prefer not to say</SelectItem>
           </SelectContent>
         </Select>
-        {errors.gender && (
-          <p className="text-sm text-destructive">{errors.gender.message}</p>
-        )}
-      </div>
+      </FormField>
     </div>
   )
 
   const renderPage2 = () => (
     <div className="space-y-6">
-      <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-foreground">Your availability</h1>
-        <p className="text-muted-foreground mt-2">
-          Help us understand your schedule and preferences
-        </p>
-      </div>
+      <PageHeader 
+        title="Your availability" 
+        subtitle="Help us understand your schedule and preferences" 
+      />
 
-      {/* Time Commitment */}
-      <div className="space-y-4">
-        <Label>Time Commitment (hours per week) *</Label>
+      <FormField label="Time Commitment (hours per week) *" error={errors.timeCommitment?.message}>
         <div className="px-3">
           <Slider
             value={timeCommitment}
@@ -378,52 +307,38 @@ export default function OnboardingPage() {
             <span>{timeCommitment[1]} hours</span>
           </div>
         </div>
-        {errors.timeCommitment && (
-          <p className="text-sm text-destructive">{errors.timeCommitment.message}</p>
-        )}
-      </div>
+      </FormField>
 
-      {/* Country */}
-      <div className="space-y-2">
-        <Label>Country of Residence *</Label>
+      <FormField label="Country of Residence *" error={errors.country?.message}>
         <Select onValueChange={(value) => setValue("country", value)}>
           <SelectTrigger className={errors.country ? "border-destructive" : ""}>
             <SelectValue placeholder="Select your country" />
           </SelectTrigger>
           <SelectContent className="max-h-60">
-            {countries.map((country) => (
+            {COUNTRIES.map((country) => (
               <SelectItem key={country} value={country}>
                 {country}
               </SelectItem>
             ))}
           </SelectContent>
         </Select>
-        {errors.country && (
-          <p className="text-sm text-destructive">{errors.country.message}</p>
-        )}
-      </div>
+      </FormField>
 
-      {/* Occupation */}
-      <div className="space-y-2">
-        <Label>Occupation *</Label>
+      <FormField label="Occupation *" error={errors.occupation?.message}>
         <Select onValueChange={(value) => setValue("occupation", value)}>
           <SelectTrigger className={errors.occupation ? "border-destructive" : ""}>
             <SelectValue placeholder="Select your occupation" />
           </SelectTrigger>
           <SelectContent className="max-h-60">
-            {occupations.map((occupation) => (
+            {OCCUPATIONS.map((occupation) => (
               <SelectItem key={occupation} value={occupation}>
                 {occupation}
               </SelectItem>
             ))}
           </SelectContent>
         </Select>
-        {errors.occupation && (
-          <p className="text-sm text-destructive">{errors.occupation.message}</p>
-        )}
-      </div>
+      </FormField>
 
-      {/* Open for Projects - Toggle */}
       <div className="space-y-3">
         <div className="flex items-center justify-between">
           <div className="space-y-0.5">
@@ -445,8 +360,7 @@ export default function OnboardingPage() {
   )
 
   const renderPage3 = () => {
-    // Sort tech stack options to show selected ones first
-    const sortedTechStackOptions = [...techStackOptions].sort((a, b) => {
+    const sortedTechStackOptions = [...TECH_STACK_OPTIONS].sort((a, b) => {
       const aSelected = selectedTechStack.includes(a)
       const bSelected = selectedTechStack.includes(b)
       if (aSelected && !bSelected) return -1
@@ -456,15 +370,12 @@ export default function OnboardingPage() {
 
     return (
       <div className="space-y-6">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-foreground">Your tech stack</h1>
-          <p className="text-muted-foreground mt-2">
-            Select all technologies you work with
-          </p>
-        </div>
+        <PageHeader 
+          title="Your tech stack" 
+          subtitle="Select all technologies you work with" 
+        />
 
-        {/* Tech Stack - Duolingo Style with Bubbling */}
-        <div className="space-y-3">
+        <FormField label="" error={errors.techStack?.message}>
           <div className="flex flex-wrap gap-2">
             {sortedTechStackOptions.map((tech) => (
               <button
@@ -482,10 +393,7 @@ export default function OnboardingPage() {
               </button>
             ))}
           </div>
-          {errors.techStack && (
-            <p className="text-sm text-destructive">{errors.techStack.message}</p>
-          )}
-        </div>
+        </FormField>
       </div>
     )
   }
@@ -495,18 +403,18 @@ export default function OnboardingPage() {
     
     return (
       <div className="space-y-6">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-foreground">Connect your socials</h1>
-          <p className="text-muted-foreground mt-2">
-            Connect at least 2 platforms to complete your profile
-          </p>
-          <p className="text-sm text-muted-foreground mt-1">
+        <PageHeader 
+          title="Connect your socials" 
+          subtitle="Connect at least 2 platforms to complete your profile" 
+        />
+        
+        <div className="text-center mb-4">
+          <p className="text-sm text-muted-foreground">
             {connectedCount}/3 connected
           </p>
         </div>
 
         <div className="space-y-4">
-          {/* GitHub */}
           <Button
             type="button"
             variant={socialConnections.github ? "default" : "outline"}
@@ -519,7 +427,6 @@ export default function OnboardingPage() {
             {socialConnections.github && <span className="ml-auto text-sm">✓ Connected</span>}
           </Button>
 
-          {/* Wakatime */}
           <Button
             type="button"
             variant={socialConnections.wakatime ? "default" : "outline"}
@@ -532,7 +439,6 @@ export default function OnboardingPage() {
             {socialConnections.wakatime && <span className="ml-auto text-sm">✓ Connected</span>}
           </Button>
 
-          {/* LinkedIn */}
           <Button
             type="button"
             variant={socialConnections.linkedin ? "default" : "outline"}
@@ -555,74 +461,25 @@ export default function OnboardingPage() {
     )
   }
 
+  // Main render
   return (
     <div className="min-h-screen bg-background pb-16 flex items-center">
       <div className="max-w-sm mx-auto py-8 px-4 w-full">
-        {/* Progress Indicator */}
-        <div className="mb-8">
-          <div className="flex items-center justify-center space-x-2">
-            {[1, 2, 3, 4].map((page) => (
-              <div
-                key={page}
-                className={cn(
-                  "w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium",
-                  page <= currentPage
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-muted text-muted-foreground"
-                )}
-              >
-                {page}
-              </div>
-            ))}
-          </div>
-          <div className="text-center mt-2">
-            <span className="text-sm text-muted-foreground">
-              Step {currentPage} of 4
-            </span>
-          </div>
-        </div>
-
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <ProgressIndicator currentPage={currentPage} />
+        
+        <form onSubmit={handleSubmit(handleSubmitForm)}>
           {currentPage === 1 && renderPage1()}
           {currentPage === 2 && renderPage2()}
           {currentPage === 3 && renderPage3()}
           {currentPage === 4 && renderPage4()}
 
-          {/* Navigation Buttons */}
-          <div className="flex justify-between mt-8">
-            {currentPage > 1 ? (
-              <Button
-                type="button"
-                variant="outline"
-                onClick={handleBack}
-                className="flex items-center space-x-2"
-              >
-                <ChevronLeft className="w-4 h-4" />
-                <span>Back</span>
-              </Button>
-            ) : (
-              <div />
-            )}
-
-            {currentPage < 4 ? (
-              <Button
-                type="button"
-                onClick={handleNext}
-                className="flex items-center space-x-2"
-              >
-                <span>Next</span>
-                <ChevronRight className="w-4 h-4" />
-              </Button>
-            ) : (
-              <Button
-                type="submit"
-                disabled={isSubmitting || !canCompleteOnboarding()}
-                className="flex items-center space-x-2"
-              >
-                {isSubmitting ? "Completing..." : "Complete Onboarding"}
-              </Button>
-            )}
-          </div>
+          <NavigationButtons
+            currentPage={currentPage}
+            onBack={handleBack}
+            onNext={handleNext}
+            isSubmitting={isSubmitting}
+            canComplete={canCompleteOnboarding()}
+          />
         </form>
       </div>
     </div>

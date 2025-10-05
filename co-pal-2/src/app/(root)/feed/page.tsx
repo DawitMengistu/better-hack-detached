@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { UserCard, UserProfile } from "@/components/feed/user-card";
 import { ProfileSlide } from "@/components/feed/profile-slide";
+import { GitHubStatsDisplay } from "@/components/github/github-stats-display";
 
 // Sample user data for testing
 const sampleUsers: UserProfile[] = [
@@ -55,6 +56,7 @@ export default function FeedPage() {
 
   return (
       <>
+      <GitHubStatsDisplay />
           {/* Feed Content */}
           <div className="space-y-6">
             <div className="grid gap-6">
