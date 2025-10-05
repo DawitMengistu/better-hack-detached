@@ -6,23 +6,17 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
 
-export function WakaTimeConnect() {
+export function WakaTimeConnect({ linked, loading }: { linked: boolean; loading?: boolean }) {
     const [isLinking, setIsLinking] = useState(false);
 
     const handleConnect = async () => {
         setIsLinking(true);
         try {
-            console.log("Attempting WakaTime account linking with Better Auth...");
-            console.log("Base URL:", process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000");
-
-            // Use Better Auth account linking for WakaTime
             await authClient.linkSocial({
                 provider: "wakatime",
                 callbackURL: "/profile"
             });
         } catch (error) {
-            console.error("WakaTime account linking error:", error);
-            console.error("Error details:", JSON.stringify(error, null, 2));
             toast.error("Failed to link WakaTime account. Please try again.");
             setIsLinking(false);
         }
@@ -45,11 +39,15 @@ export function WakaTimeConnect() {
             <CardContent>
                 <Button
                     onClick={handleConnect}
-                    disabled={isLinking}
-                    className="w-full"
-                    variant="outline"
+                    disabled={isLinking || linked || loading}
+                    className={`w-full ${linked ? 'bg-green-600 text-white cursor-default' : ''}`}
+                    variant={linked ? "default" : "outline"}
                 >
-                    {isLinking ? (
+                    {loading ? (
+                        <span className="text-xs">Checking...</span>
+                    ) : linked ? (
+                        <span className="text-xs">Linked</span>
+                    ) : isLinking ? (
                         <>
                             <div className="w-4 h-4 mr-2 animate-spin rounded-full border-2 border-gray-300 border-t-gray-600"></div>
                             Linking...

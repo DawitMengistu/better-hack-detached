@@ -7,6 +7,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { ProtectedRoute } from "@/components/auth/protected-route";
 import { WakaTimeConnect } from "@/components/wakatime/wakatime-connect";
 import { LinkedInConnect } from "@/components/linkedin/linkedin-connect";
+import { GitHubStatsDisplay } from "@/components/github/github-stats-display";
+import { useIntegrationStatus } from "@/hooks/use-integration-status";
 import { ConnectBalance } from "@/components/profile/connect-balance";
 import { initiatePayment } from "@/app/actions/payment";
 import { connectPackages } from "@/lib/payment-types";
@@ -17,6 +19,10 @@ export default function ProfilePage() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const [connectBalance, setConnectBalance] = useState(150); // Dummy balance
+
+    // Dummy userId for demo; replace with actual user context
+    const userId = "current-user-id";
+    const { status, loading } = useIntegrationStatus(userId);
 
     useEffect(() => {
         // Check for payment success/error messages
@@ -65,14 +71,50 @@ export default function ProfilePage() {
     return (
         <div className="min-h-screen bg-background pb-16">
             <div className="max-w-sm mx-auto py-2 px-2">
-
-
                 {/* Connect Balance - Top Priority */}
                 <div className="mb-6">
                     <ConnectBalance
                         balance={connectBalance}
                         onBuyConnects={handleBuyConnects}
                     />
+                </div>
+
+                {/* Integration Status */}
+                <div className="space-y-4 mb-6">
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Integration Status</CardTitle>
+                            <CardDescription>
+                                See which accounts are linked to your profile.
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            {loading ? (
+                                <div className="text-muted-foreground">Checking integrations...</div>
+                            ) : (
+                                <ul className="space-y-2">
+                                    <li className="flex items-center gap-2">
+                                        <span className="font-medium">GitHub:</span>
+                                        <span className={status.github ? "text-green-600" : "text-red-500"}>
+                                            {status.github ? "Linked" : "Not Linked"}
+                                        </span>
+                                    </li>
+                                    <li className="flex items-center gap-2">
+                                        <span className="font-medium">LinkedIn:</span>
+                                        <span className={status.linkedin ? "text-green-600" : "text-red-500"}>
+                                            {status.linkedin ? "Linked" : "Not Linked"}
+                                        </span>
+                                    </li>
+                                    <li className="flex items-center gap-2">
+                                        <span className="font-medium">WakaTime:</span>
+                                        <span className={status.wakatime ? "text-green-600" : "text-red-500"}>
+                                            {status.wakatime ? "Linked" : "Not Linked"}
+                                        </span>
+                                    </li>
+                                </ul>
+                            )}
+                        </CardContent>
+                    </Card>
                 </div>
 
                 {/* Profile Content */}
@@ -89,8 +131,10 @@ export default function ProfilePage() {
                         </CardContent>
                     </Card>
 
-                    <WakaTimeConnect />
-                    <LinkedInConnect />
+                    {/* Integration Connect Buttons */}
+                    <GitHubStatsDisplay />
+                    <WakaTimeConnect linked={!!status.wakatime} loading={loading} />
+                    <LinkedInConnect linked={!!status.linkedin} loading={loading} />
                 </div>
             </div>
         </div>
