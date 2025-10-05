@@ -5,6 +5,18 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { IconMessage, IconEye, IconX } from "@tabler/icons-react";
+import { useState, useEffect } from "react";
+
+interface ApiMatch {
+    id: string;
+    createdAt: string;
+    otherUser: {
+        id: string;
+        name: string;
+        email: string;
+        image: string | null;
+    };
+}
 
 interface Match {
     id: string;
@@ -16,37 +28,7 @@ interface Match {
     isMatched: boolean;
 }
 
-// Hardcoded matches data
-const matchedUsers: Match[] = [
-    {
-        id: "1",
-        name: "Betelhem Dessie",
-        avatar: "https://media.licdn.com/dms/image/v2/D4E22AQFdV5OlAEJanQ/feedshare-shrink_800/feedshare-shrink_800/0/1682073741589?e=2147483647&v=beta&t=NjvSCUK7wtiAdc-CZyvUZ37HUsIfLi_X3pxOnh7yogM",
-        occupation: "Web & Mobile Developer",
-        techStack: ["React", "React Native", "Node.js"],
-        matchedAt: "2 days ago",
-        isMatched: true
-    },
-    {
-        id: "3",
-        name: "Henok Tsegaye",
-        avatar: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/Henok_Tsegaye.jpg/256px-Henok_Tsegaye.jpg",
-        occupation: "Full-stack Developer",
-        techStack: ["JavaScript", "React", "Node.js"],
-        matchedAt: "1 week ago",
-        isMatched: true
-    },
-    {
-        id: "6",
-        name: "KinfeMichael Tariku",
-        avatar: "https://images.crunchbase.com/image/upload/c_thumb,h_680,w_680,f_auto,g_face,z_0.7,b_white,q_auto:eco,dpr_1/5076dac89a5f495684084a4c0303e5cf",
-        occupation: "Founding Engineer",
-        techStack: ["React", "Node.js", "Authentication"],
-        matchedAt: "3 days ago",
-        isMatched: true
-    }
-];
-
+// Hardcoded pending matches (users who liked you but you haven't seen yet)
 const pendingMatches: Match[] = [
     {
         id: "2",
@@ -85,7 +67,69 @@ const getInitials = (name: string) => {
         .toUpperCase();
 };
 
+const formatTimeAgo = (dateString: string) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+
+    if (diffInSeconds < 60) return "Just now";
+    if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} minutes ago`;
+    if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} hours ago`;
+    if (diffInSeconds < 2592000) return `${Math.floor(diffInSeconds / 86400)} days ago`;
+    return `${Math.floor(diffInSeconds / 2592000)} weeks ago`;
+};
+
 export default function MatchesPage() {
+    const [matchedUsers, setMatchedUsers] = useState<Match[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [currentUserId, setCurrentUserId] = useState<string>('current-user-id');
+
+    // Fetch real matches from backend
+    useEffect(() => {
+        const fetchMatches = async () => {
+            try {
+                // First, get current user ID
+                const usersResponse = await fetch('/api/test-data/users');
+                const usersData = await usersResponse.json();
+
+                let userIdToUse = currentUserId;
+                if (usersData.success && usersData.users && usersData.users.length > 0) {
+                    const fetchedCurrentUserId = usersData.users[0]?.id;
+                    if (fetchedCurrentUserId) {
+                        setCurrentUserId(fetchedCurrentUserId);
+                        userIdToUse = fetchedCurrentUserId;
+                        console.log(`👤 [MATCHES] Current user: ${fetchedCurrentUserId}`);
+                    }
+                }
+
+                // Then fetch matches with current user ID
+                const response = await fetch(`/api/user-interactions/matches?userId=${userIdToUse}`);
+                const data = await response.json();
+
+                if (data.success && data.matches) {
+                    // Transform API matches to our Match interface
+                    const transformedMatches: Match[] = data.matches.map((match: ApiMatch) => ({
+                        id: match.otherUser.id,
+                        name: match.otherUser.name,
+                        avatar: match.otherUser.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(match.otherUser.name)}&background=random`,
+                        occupation: "Developer", // You can fetch this from user profile if needed
+                        techStack: ["React", "Node.js"], // You can fetch this from user profile if needed
+                        matchedAt: formatTimeAgo(match.createdAt),
+                        isMatched: true
+                    }));
+
+                    setMatchedUsers(transformedMatches);
+                }
+            } catch (error) {
+                console.error('Failed to fetch matches:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchMatches();
+    }, []);
+
     return (
         <div className="space-y-6 p-2 overflow-y-auto mb-10 scrollbar-hide">
             {/* Your Matches Section */}
@@ -100,31 +144,43 @@ export default function MatchesPage() {
                     </CardDescription>
                 </CardHeader>
                 <CardContent className="p-0">
-                    <div className="space-y-1">
-                        {matchedUsers.map((user) => (
-                            <div key={user.id} className="flex items-center gap-2 px-3 py-2 border-b border-border last:border-b-0 hover:bg-muted/30 transition-colors">
-                                <Avatar className="h-8 w-8">
-                                    <AvatarImage src={user.avatar} alt={user.name} />
-                                    <AvatarFallback className="text-xs font-medium">
-                                        {getInitials(user.name)}
-                                    </AvatarFallback>
-                                </Avatar>
+                    {loading ? (
+                        <div className="p-4 text-center">
+                            <p className="text-sm text-muted-foreground">Loading matches...</p>
+                        </div>
+                    ) : matchedUsers.length === 0 ? (
+                        <div className="p-4 text-center">
+                            <p className="text-sm text-muted-foreground">No matches yet</p>
+                            <p className="text-xs text-muted-foreground mt-1">Start swiping to find your perfect match!</p>
+                        </div>
+                    ) : (
+                        <div className="space-y-1">
+                            {matchedUsers.map((user) => (
+                                <div key={user.id} className="flex items-center gap-2 px-3 py-2 border-b border-border last:border-b-0 hover:bg-muted/30 transition-colors">
+                                    <Avatar className="h-8 w-8">
+                                        <AvatarImage src={user.avatar} alt={user.name} />
+                                        <AvatarFallback className="text-xs font-medium">
+                                            {getInitials(user.name)}
+                                        </AvatarFallback>
+                                    </Avatar>
 
-                                <div className="flex-1 min-w-0">
-                                    <h4 className="text-sm font-medium text-foreground truncate">{user.name}</h4>
-                                    <p className="text-xs text-muted-foreground truncate">{user.occupation}</p>
+                                    <div className="flex-1 min-w-0">
+                                        <h4 className="text-sm font-medium text-foreground truncate">{user.name}</h4>
+                                        <p className="text-xs text-muted-foreground truncate">{user.occupation}</p>
+                                    </div>
+
+                                    <div className="text-right">
+                                        <p className="text-xs text-muted-foreground">Matched</p>
+                                        <p className="text-sm font-medium text-foreground">{user.matchedAt}</p>
+                                    </div>
+
+                                    <Button size="sm" variant="ghost" className="h-7 px-2 text-xs">
+                                        <IconMessage className="w-3 h-3" />
+                                    </Button>
                                 </div>
-
-                                <div className="text-right">
-                                    <p className="text-xs text-muted-foreground">{user.matchedAt}</p>
-                                </div>
-
-                                <Button size="sm" variant="ghost" className="h-7 px-2 text-xs">
-                                    <IconMessage className="w-3 h-3" />
-                                </Button>
-                            </div>
-                        ))}
-                    </div>
+                            ))}
+                        </div>
+                    )}
                 </CardContent>
             </Card>
 

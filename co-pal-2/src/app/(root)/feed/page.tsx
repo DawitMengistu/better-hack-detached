@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { UserProfile } from "@/components/feed/user-card";
 import { SwipeableCardStack } from "@/components/feed/SwipeableCardStack";
 
@@ -97,6 +97,66 @@ const sampleUsers: UserProfile[] = [
 ];
 
 export default function FeedPage() {
+  const [allUsers, setAllUsers] = useState<UserProfile[]>(sampleUsers);
+  const [currentUserId, setCurrentUserId] = useState<string>('current-user-id');
+
+  // Fetch real users from backend and add them to the feed
+  useEffect(() => {
+    const fetchRealUsers = async () => {
+      try {
+        console.log("🔍 [FEED] Fetching real users from backend");
+
+        // Fetch all users from the database
+        const response = await fetch('/api/test-data/users');
+        const data = await response.json();
+
+        if (data.success && data.users && data.users.length > 0) {
+          console.log(`📊 [FEED] Found ${data.users.length} real users`);
+
+          // Filter out current user (assuming first user is current user for demo)
+          const fetchedCurrentUserId = data.users[0]?.id;
+          const otherUsers = data.users.filter((user: any) => user.id !== fetchedCurrentUserId);
+
+          console.log(`👤 [FEED] Current user: ${fetchedCurrentUserId}`);
+          console.log(`👥 [FEED] Other users: ${otherUsers.length}`);
+
+          // Update current user ID state
+          if (fetchedCurrentUserId) {
+            console.log(`🔄 [FEED] Setting current user ID from ${currentUserId} to ${fetchedCurrentUserId}`);
+            setCurrentUserId(fetchedCurrentUserId);
+          }
+
+          // Take first 2 other users and create profiles for them
+          const realUsers: UserProfile[] = otherUsers.slice(0, 2).map((user: any, index: number) => ({
+            id: user.id,
+            name: user.name,
+            bio: `Experienced full-stack developer with expertise in modern web technologies. Passionate about building scalable applications and contributing to open-source projects. ${index === 0 ? 'Specializes in frontend development and UI/UX design.' : 'Focuses on backend architecture and cloud infrastructure.'}`,
+            avatar: user.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=random`,
+            occupation: "Full-Stack Developer",
+            techStack: index === 0 ? ["React", "TypeScript", "Next.js", "Tailwind CSS", "Figma"] : ["Node.js", "Python", "AWS", "Docker", "PostgreSQL"],
+            age: 28 + index,
+            country: "Ethiopia",
+            image: user.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=random`
+          }));
+
+          console.log(`✅ [FEED] Created ${realUsers.length} real user profiles`);
+
+          // Add real users to the beginning of the sample users
+          setAllUsers([...realUsers, ...sampleUsers]);
+
+        } else {
+          console.log("⚠️ [FEED] No real users found, using only dummy data");
+        }
+      } catch (error) {
+        console.error("💥 [FEED] Error fetching real users:", error);
+        console.log("🔄 [FEED] Falling back to dummy data only");
+      }
+    };
+
+    fetchRealUsers();
+  }, []);
+
+  console.log(`🎯 [FEED] Total users to display: ${allUsers.length}`);
   const handleSwipeLeft = (user: UserProfile) => {
     console.log("Passed on:", user.name);
     // Here you can add logic to track passes, update preferences, etc.
@@ -120,13 +180,14 @@ export default function FeedPage() {
   return (
     <div className="h-full bg-background overflow-hidden">
       <SwipeableCardStack
-        users={sampleUsers}
+        users={allUsers}
         onSwipeLeft={handleSwipeLeft}
         onSwipeRight={handleSwipeRight}
         onAllCardsSwiped={handleAllCardsSwiped}
         onCardClick={handleCardClick}
         maxVisibleCards={1}
         className="h-full"
+        currentUserId={currentUserId}
       />
     </div>
   );

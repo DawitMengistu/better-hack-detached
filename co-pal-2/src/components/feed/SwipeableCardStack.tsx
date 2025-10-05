@@ -12,6 +12,7 @@ interface SwipeableCardStackProps {
     maxVisibleCards?: number;
     className?: string;
     onCardClick?: (user: UserProfile) => void;
+    currentUserId?: string;
 }
 
 interface CardPosition {
@@ -30,7 +31,9 @@ export function SwipeableCardStack({
     maxVisibleCards = 3,
     className = "",
     onCardClick,
+    currentUserId = 'current-user-id',
 }: SwipeableCardStackProps) {
+    console.log(`🎯 [SWIPEABLE] Received currentUserId: ${currentUserId}`);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isAnimating, setIsAnimating] = useState(false);
     const [selectedUser, setSelectedUser] = useState<UserProfile | null>(null);
@@ -38,17 +41,100 @@ export function SwipeableCardStack({
     const [dragStart, setDragStart] = useState<{ x: number; y: number } | null>(null);
     const [dragCurrent, setDragCurrent] = useState<{ x: number; y: number } | null>(null);
     const [isDragging, setIsDragging] = useState(false);
+    const [likedUsers, setLikedUsers] = useState<Set<string>>(new Set());
+    const [passedUsers, setPassedUsers] = useState<Set<string>>(new Set());
 
     const cardRef = useRef<HTMLDivElement>(null);
 
     const visibleUsers = users.slice(currentIndex, currentIndex + maxVisibleCards);
     const hasMoreCards = currentIndex < users.length;
 
+    // Async function to store liked user (fire-and-forget)
+    const storeLikedUser = (user: UserProfile) => {
+        // Add to local state immediately for UI feedback
+        setLikedUsers(prev => new Set([...prev, user.id]));
+
+        // Fire-and-forget API call - don't await
+        fetch('/api/user-interactions/like', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                userId: currentUserId,
+                likedId: user.id
+            })
+        })
+            .then(response => response.json())
+            .then(result => {
+                if (result.isMatch) {
+                    console.log(`🎉 MATCH! You and ${user.name} liked each other!`);
+                    // You can add match notification logic here
+                }
+                console.log(`✅ Liked user: ${user.name} (${user.id})`);
+            })
+            .catch(error => {
+                console.error('Failed to store liked user:', error);
+                // Remove from local state if API call failed
+                setLikedUsers(prev => {
+                    const newSet = new Set(prev);
+                    newSet.delete(user.id);
+                    return newSet;
+                });
+            });
+    };
+
+    // Async function to store passed user (fire-and-forget)
+    const storePassedUser = (user: UserProfile) => {
+        // Add to local state immediately for UI feedback
+        setPassedUsers(prev => new Set([...prev, user.id]));
+
+        // Fire-and-forget API call - don't await
+        fetch('/api/user-interactions/pass', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                userId: currentUserId,
+                passedId: user.id
+            })
+        })
+            .then(response => response.json())
+            .then(result => {
+                console.log(`❌ Passed user: ${user.name} (${user.id})`);
+            })
+            .catch(error => {
+                console.error('Failed to store passed user:', error);
+                // Remove from local state if API call failed
+                setPassedUsers(prev => {
+                    const newSet = new Set(prev);
+                    newSet.delete(user.id);
+                    return newSet;
+                });
+            });
+    };
+
     useEffect(() => {
         if (currentIndex >= users.length && onAllCardsSwiped) {
             onAllCardsSwiped();
         }
     }, [currentIndex, users.length, onAllCardsSwiped]);
+
+    // Load existing matches from backend on mount (fire-and-forget)
+    useEffect(() => {
+        // Fire-and-forget API call to load matches
+        fetch(`/api/user-interactions/matches?userId=${currentUserId}`)
+            .then(response => response.json())
+            .then(matchesData => {
+                if (matchesData.success) {
+                    console.log('📱 Loaded matches:', matchesData.matches.length);
+                }
+            })
+            .catch(error => {
+                console.error('Failed to load user preferences:', error);
+            });
+    }, []);
 
     // Keyboard event listeners for left/right arrow keys
     useEffect(() => {
@@ -118,6 +204,9 @@ export function SwipeableCardStack({
         setIsAnimating(true);
         const currentUser = users[currentIndex];
 
+        // Store passed user asynchronously (non-blocking)
+        storePassedUser(currentUser);
+
         if (onSwipeLeft) {
             onSwipeLeft(currentUser);
         }
@@ -133,6 +222,9 @@ export function SwipeableCardStack({
 
         setIsAnimating(true);
         const currentUser = users[currentIndex];
+
+        // Store liked user asynchronously (non-blocking)
+        storeLikedUser(currentUser);
 
         if (onSwipeRight) {
             onSwipeRight(currentUser);
