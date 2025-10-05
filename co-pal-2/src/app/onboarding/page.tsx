@@ -275,8 +275,6 @@ export default function OnboardingPage() {
           <SelectContent>
             <SelectItem value="male">Male</SelectItem>
             <SelectItem value="female">Female</SelectItem>
-            <SelectItem value="non-binary">Non-binary</SelectItem>
-            <SelectItem value="prefer-not-to-say">Prefer not to say</SelectItem>
           </SelectContent>
         </Select>
       </FormField>
@@ -403,14 +401,8 @@ export default function OnboardingPage() {
       <div className="space-y-6">
         <PageHeader 
           title="Connect your socials" 
-          subtitle="Connect at least 2 platforms to complete your profile" 
+          subtitle="Connect your platforms to enrich your profile" 
         />
-        
-        <div className="text-center mb-4">
-          <p className="text-sm text-muted-foreground">
-            {connectedCount}/3 connected
-          </p>
-        </div>
 
         <div className="space-y-4">
           <Button
@@ -450,11 +442,7 @@ export default function OnboardingPage() {
           </Button>
         </div>
 
-        {connectedCount < 2 && (
-          <p className="text-sm text-destructive text-center">
-            Please connect at least 2 platforms to continue
-          </p>
-        )}
+        {/* No minimum connection requirement */}
       </div>
     )
   }

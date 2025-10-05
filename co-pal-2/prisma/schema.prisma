@@ -22,20 +22,17 @@ model User {
   accounts           account[]
   github             GitHub?
   linkedin           LinkedIn?
-  preferences        Preferences?
-  sessions           session[]
-  wakatime           WakaTime?
-  Chat               Chat[]       @relation("UserToChat")
-  // User interaction tracking
-  likedUsers         UserLike[]   @relation("UserLikes")
-  passedUsers        UserPass[]   @relation("UserPasses")
-  likedByUsers       UserLike[]   @relation("LikedByUsers")
-  passedByUsers      UserPass[]   @relation("PassedByUsers")
-  // Match relations
   matchesAsUser1     Match[]      @relation("User1Matches")
   matchesAsUser2     Match[]      @relation("User2Matches")
-  // Profile relation
+  preferences        Preferences?
   profile            Profile?
+  sessions           session[]
+  likedByUsers       UserLike[]   @relation("LikedByUsers")
+  likedUsers         UserLike[]   @relation("UserLikes")
+  passedByUsers      UserPass[]   @relation("PassedByUsers")
+  passedUsers        UserPass[]   @relation("UserPasses")
+  wakatime           WakaTime?
+  Chat               Chat[]       @relation("UserToChat")
 
   @@map("user")
 }
@@ -152,59 +149,52 @@ model Preferences {
   @@map("preferences")
 }
 
-// User interaction models for tracking likes and passes
 model UserLike {
   id        String   @id @default(cuid())
-  userId    String // User who liked
-  likedId   String // User who was liked
+  userId    String
+  likedId   String
   createdAt DateTime @default(now())
+  likedUser User     @relation("LikedByUsers", fields: [likedId], references: [id], onDelete: Cascade)
+  user      User     @relation("UserLikes", fields: [userId], references: [id], onDelete: Cascade)
 
-  user      User @relation("UserLikes", fields: [userId], references: [id], onDelete: Cascade)
-  likedUser User @relation("LikedByUsers", fields: [likedId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, likedId]) // Prevent duplicate likes
+  @@unique([userId, likedId])
   @@map("user_likes")
 }
 
 model UserPass {
-  id        String   @id @default(cuid())
-  userId    String // User who passed
-  passedId  String // User who was passed
-  createdAt DateTime @default(now())
+  id         String   @id @default(cuid())
+  userId     String
+  passedId   String
+  createdAt  DateTime @default(now())
+  passedUser User     @relation("PassedByUsers", fields: [passedId], references: [id], onDelete: Cascade)
+  user       User     @relation("UserPasses", fields: [userId], references: [id], onDelete: Cascade)
 
-  user       User @relation("UserPasses", fields: [userId], references: [id], onDelete: Cascade)
-  passedUser User @relation("PassedByUsers", fields: [passedId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, passedId]) // Prevent duplicate passes
+  @@unique([userId, passedId])
   @@map("user_passes")
 }
 
-// Model for tracking matches (mutual likes)
 model Match {
   id        String   @id @default(cuid())
-  userId1   String // First user in the match
-  userId2   String // Second user in the match
+  userId1   String
+  userId2   String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  user1     User     @relation("User1Matches", fields: [userId1], references: [id], onDelete: Cascade)
+  user2     User     @relation("User2Matches", fields: [userId2], references: [id], onDelete: Cascade)
 
-  user1 User @relation("User1Matches", fields: [userId1], references: [id], onDelete: Cascade)
-  user2 User @relation("User2Matches", fields: [userId2], references: [id], onDelete: Cascade)
-
-  // Ensure userId1 < userId2 for consistent ordering
   @@unique([userId1, userId2])
   @@map("matches")
 }
 
-// Session model for authentication (Better Auth compatible)
 model session {
   id        String   @id
-  userId    String
   expiresAt DateTime
   token     String   @unique
-  ipAddress String?
-  userAgent String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  userId    String
+  ipAddress String?
+  userAgent String?
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("session")
