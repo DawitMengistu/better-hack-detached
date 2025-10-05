@@ -34,6 +34,8 @@ model User {
   // Match relations
   matchesAsUser1     Match[]      @relation("User1Matches")
   matchesAsUser2     Match[]      @relation("User2Matches")
+  // Profile relation
+  profile            Profile?
 
   @@map("user")
 }
@@ -206,4 +208,21 @@ model session {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("session")
+}
+
+model Profile {
+  id              String   @id @default(cuid())
+  age             Int?
+  gender          String?
+  timeCommitment  Int[]
+  techStack       String[]
+  country         String?
+  occupation      String?
+  openForProjects Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  userId          String   @unique
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("profile")
 }
