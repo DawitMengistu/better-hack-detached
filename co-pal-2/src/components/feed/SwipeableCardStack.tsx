@@ -12,7 +12,7 @@ interface SwipeableCardStackProps {
     maxVisibleCards?: number;
     className?: string;
     onCardClick?: (user: UserProfile) => void;
-    currentUserId?: string;
+    currentUserId?: string | null;
 }
 
 interface CardPosition {
@@ -31,7 +31,7 @@ export function SwipeableCardStack({
     maxVisibleCards = 3,
     className = "",
     onCardClick,
-    currentUserId = 'current-user-id',
+    currentUserId = null,
 }: SwipeableCardStackProps) {
     console.log(`🎯 [SWIPEABLE] Received currentUserId: ${currentUserId}`);
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -53,6 +53,12 @@ export function SwipeableCardStack({
     const storeLikedUser = (user: UserProfile) => {
         // Add to local state immediately for UI feedback
         setLikedUsers(prev => new Set([...prev, user.id]));
+
+        // If we don't have a current user ID, skip the API call and log
+        if (!currentUserId) {
+            console.warn('⚠️ [SWIPEABLE] Missing currentUserId; skipping like API call for', user.id);
+            return;
+        }
 
         // Fire-and-forget API call - don't await
         fetch('/api/user-interactions/like', {
@@ -88,6 +94,12 @@ export function SwipeableCardStack({
     const storePassedUser = (user: UserProfile) => {
         // Add to local state immediately for UI feedback
         setPassedUsers(prev => new Set([...prev, user.id]));
+
+        // If we don't have a current user ID, skip the API call and log
+        if (!currentUserId) {
+            console.warn('⚠️ [SWIPEABLE] Missing currentUserId; skipping pass API call for', user.id);
+            return;
+        }
 
         // Fire-and-forget API call - don't await
         fetch('/api/user-interactions/pass', {

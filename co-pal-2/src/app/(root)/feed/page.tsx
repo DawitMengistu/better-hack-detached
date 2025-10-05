@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { UserProfile } from "@/components/feed/user-card";
 import { SwipeableCardStack } from "@/components/feed/SwipeableCardStack";
+import { authClient } from '@/lib/auth-client';
 
 // Sample user data for testing
 const sampleUsers: UserProfile[] = [
@@ -98,7 +99,21 @@ const sampleUsers: UserProfile[] = [
 
 export default function FeedPage() {
   const [allUsers, setAllUsers] = useState<UserProfile[]>(sampleUsers);
-  const [currentUserId, setCurrentUserId] = useState<string>('current-user-id');
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+
+  // Get session from auth client to identify the logged in user
+  const { data: session, isPending } = authClient.useSession();
+
+  useEffect(() => {
+    if (session && session.user && session.user.id) {
+      console.log(`👤 [FEED] Session user id found: ${session.user.id}`);
+      setCurrentUserId(session.user.id);
+    } else if (isPending) {
+      console.log('⏳ [FEED] Session pending...');
+    } else {
+      console.log('⚠️ [FEED] No session user found; currentUserId remains null');
+    }
+  }, [session, isPending]);
 
   // Fetch real users from backend and add them to the feed
   useEffect(() => {
@@ -128,10 +143,15 @@ export default function FeedPage() {
             console.log(`   ${index + 1}. ${user.name} (${user.id})`);
           });
 
-          // Update current user ID state
+          // Update current user ID state only if we don't have a session-derived ID.
+          // Prefer the authenticated session ID as the source of truth.
           if (fetchedCurrentUserId) {
-            console.log(`🔄 [FEED] Setting current user ID from ${currentUserId} to ${fetchedCurrentUserId}`);
-            setCurrentUserId(fetchedCurrentUserId);
+            if (!session || !session.user || !session.user.id) {
+              console.log(`🔄 [FEED] No session available — using fetched user id ${fetchedCurrentUserId} as fallback`);
+              setCurrentUserId(fetchedCurrentUserId);
+            } else if (session.user.id !== fetchedCurrentUserId) {
+              console.warn(`⚠️ [FEED] Session user id (${session.user.id}) does not match fetched first user id (${fetchedCurrentUserId}). Ignoring fetched id and using session.`);
+            }
           }
 
           // Take first 2 other users and create profiles for them (excluding current user)
