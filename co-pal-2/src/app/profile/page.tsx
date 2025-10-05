@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ProtectedRoute } from "@/components/auth/protected-route";
 import { WakaTimeConnect } from "@/components/wakatime/wakatime-connect";
+import { LinkedInConnect } from "@/components/linkedin/linkedin-connect";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
@@ -54,6 +55,8 @@ export default function ProfilePage() {
                         </Card>
 
                         <WakaTimeConnect />
+
+                        <LinkedInConnect />
                     </div>
                 </div>
             </div>

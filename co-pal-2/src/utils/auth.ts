@@ -25,6 +25,11 @@ export const auth = betterAuth({
         "user:follow",
       ],
     },
+    linkedin: {
+      clientId: process.env.LINKEDIN_CLIENT_ID as string,
+      clientSecret: process.env.LINKEDIN_CLIENT_SECRET as string,
+      scope: ["openid", "profile", "email"],
+    },
   },
   secret: process.env.BETTER_AUTH_SECRET || "fallback-secret-key",
   baseURL: process.env.BETTER_AUTH_URL || "http://localhost:3000",
