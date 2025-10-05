@@ -70,10 +70,7 @@ export function GitHubStatsDisplay() {
       </CardHeader>
       <CardContent className="space-y-2 p-4">
         <div className="grid grid-cols-2 gap-2">
-          <div className="flex flex-col gap-1">
-            <span className="text-xs text-muted-foreground">Joined</span>
-            <span className="text-xs font-medium">{formattedStats.joined}</span>
-          </div>
+          {/* Joined date not available in formattedStats, so this block is removed */}
           <div className="flex flex-col gap-1">
             <span className="text-xs text-muted-foreground">Followers</span>
             <span className="text-xs font-medium">{formattedStats.totalFollowers}</span>
