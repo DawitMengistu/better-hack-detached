@@ -7,6 +7,7 @@ import { ProtectedRoute } from "@/components/auth/protected-route";
 import { WakaTimeConnect } from "@/components/wakatime/wakatime-connect";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { LinkedInConnect } from "@/components/linkedin/linkedin-connect";
 
 export default function ProfilePage() {
     return (
@@ -24,6 +25,7 @@ export default function ProfilePage() {
             </Card>
 
             <WakaTimeConnect />
+            <LinkedInConnect />
         </div>
     );
 }
