@@ -10,7 +10,7 @@ export async function signUpUser(
     email, // user email address
     password, // user password -> min 8 characters by default
     name, // user display name
-    callbackURL: "/feed", // A URL to redirect to after the user verifies their email (optional)
+    callbackURL: "/onboarding", // A URL to redirect to after the user verifies their email (optional)
   });
 
   return { data, error };
