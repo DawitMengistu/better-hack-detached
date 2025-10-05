@@ -240,6 +240,116 @@ export function ProfileSlide({ user, isOpen, onClose }: ProfileSlideProps) {
                         collaborators: 12
                     }
                 ];
+            case "6": // KinfeMichael Tariku - Founding Engineer / Co-Founder (2 projects - focused on auth and maps)
+                return [
+                    {
+                        id: 1,
+                        images: [
+                            "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=400&h=300&fit=crop",
+                            "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=300&fit=crop"
+                        ],
+                        title: "Better Auth - Next-Gen Authentication",
+                        description: "Revolutionary authentication platform providing secure, scalable solutions for modern applications. Built with cutting-edge security practices.",
+                        link: "https://better-auth.com",
+                        category: "Web",
+                        views: 12456,
+                        stars: 892,
+                        time: "234d",
+                        collaborators: 4
+                    },
+                    {
+                        id: 2,
+                        images: [
+                            "https://images.unsplash.com/photo-1561070791-2526d30994b5?w=400&h=300&fit=crop"
+                        ],
+                        title: "Gebeta Maps - Ethiopian Navigation",
+                        description: "Comprehensive mapping solution for Ethiopia, featuring local landmarks, traffic data, and navigation optimized for Ethiopian roads.",
+                        link: "https://gebetamaps.com",
+                        category: "Web",
+                        views: 8934,
+                        stars: 567,
+                        time: "456d",
+                        collaborators: 8
+                    }
+                ];
+            case "7": // Dagmawi Esayas - Software Engineer / Entrepreneur (3 projects - diverse solutions)
+                return [
+                    {
+                        id: 1,
+                        images: [
+                            "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=400&h=300&fit=crop",
+                            "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=300&fit=crop"
+                        ],
+                        title: "Ethiopian Business Automation Suite",
+                        description: "Comprehensive business management platform designed specifically for Ethiopian enterprises, featuring local payment integration and compliance tools.",
+                        link: "https://github.com/dagmawi/business-automation",
+                        category: "Web",
+                        views: 3456,
+                        stars: 234,
+                        time: "123d",
+                        collaborators: 6
+                    },
+                    {
+                        id: 2,
+                        images: [
+                            "https://images.unsplash.com/photo-1561070791-2526d30994b5?w=400&h=300&fit=crop"
+                        ],
+                        title: "Microservices Architecture Framework",
+                        description: "Scalable microservices framework optimized for Ethiopian infrastructure, featuring Docker containerization and AWS deployment.",
+                        link: "https://github.com/dagmawi/microservices-framework",
+                        category: "Web",
+                        views: 5678,
+                        stars: 345,
+                        time: "189d",
+                        collaborators: 5
+                    },
+                    {
+                        id: 3,
+                        images: [
+                            "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=300&fit=crop"
+                        ],
+                        title: "Digital Transformation Toolkit",
+                        description: "Comprehensive toolkit helping Ethiopian businesses transition to digital operations, including training modules and implementation guides.",
+                        link: "https://digital-transformation-et.com",
+                        category: "Web",
+                        views: 2345,
+                        stars: 178,
+                        time: "67d",
+                        collaborators: 9
+                    }
+                ];
+            case "8": // Temkin Mengistu - Full-Stack Developer / Tech Mentor (2 projects - education focus)
+                return [
+                    {
+                        id: 1,
+                        images: [
+                            "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=400&h=300&fit=crop",
+                            "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=300&fit=crop"
+                        ],
+                        title: "Ethiopian Developer Academy",
+                        description: "Online learning platform teaching modern web development to Ethiopian students, featuring Amharic language support and local project examples.",
+                        link: "https://ethiopian-dev-academy.com",
+                        category: "Web",
+                        views: 7890,
+                        stars: 456,
+                        time: "345d",
+                        collaborators: 12
+                    },
+                    {
+                        id: 2,
+                        images: [
+                            "https://images.unsplash.com/photo-1561070791-2526d30994b5?w=400&h=300&fit=crop"
+                        ],
+                        title: "Open Source Mentorship Platform",
+                        description: "Platform connecting experienced developers with Ethiopian students, facilitating mentorship relationships and collaborative learning.",
+                        link: "https://github.com/temkin/mentorship-platform",
+                        category: "Web",
+                        views: 4567,
+                        stars: 289,
+                        time: "234d",
+                        collaborators: 15
+                    }
+                ];
             default:
                 return [
                     {

@@ -50,6 +50,26 @@ export function SwipeableCardStack({
         }
     }, [currentIndex, users.length, onAllCardsSwiped]);
 
+    // Keyboard event listeners for left/right arrow keys
+    useEffect(() => {
+        const handleKeyPress = (event: KeyboardEvent) => {
+            if (isAnimating || currentIndex >= users.length) return;
+
+            if (event.key === 'ArrowLeft') {
+                event.preventDefault();
+                handleSwipeLeft();
+            } else if (event.key === 'ArrowRight') {
+                event.preventDefault();
+                handleSwipeRight();
+            }
+        };
+
+        document.addEventListener('keydown', handleKeyPress);
+        return () => {
+            document.removeEventListener('keydown', handleKeyPress);
+        };
+    }, [isAnimating, currentIndex, users.length]);
+
     const handleDragStart = (e: React.MouseEvent | React.TouchEvent) => {
         if (isAnimating) return;
 

@@ -10,23 +10,23 @@ const sampleUsers: UserProfile[] = [
     id: "1",
     name: "Betelhem Dessie",
     bio: "Innovative web and mobile developer from Ethiopia, passionate about creating technology solutions that bridge gaps in education and accessibility. Founder of robotics programs for young girls.",
-    avatar: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Betelhem_Dessie.jpg/256px-Betelhem_Dessie.jpg",
+    avatar: "https://media.licdn.com/dms/image/v2/D4E22AQFdV5OlAEJanQ/feedshare-shrink_800/feedshare-shrink_800/0/1682073741589?e=2147483647&v=beta&t=NjvSCUK7wtiAdc-CZyvUZ37HUsIfLi_X3pxOnh7yogM",
     occupation: "Web & Mobile Developer",
     techStack: ["React", "React Native", "Node.js", "Python", "AI/ML"],
     age: 23,
     country: "Ethiopia",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Betelhem_Dessie.jpg/256px-Betelhem_Dessie.jpg"
+    image: "https://media.licdn.com/dms/image/v2/D4E22AQFdV5OlAEJanQ/feedshare-shrink_800/feedshare-shrink_800/0/1682073741589?e=2147483647&v=beta&t=NjvSCUK7wtiAdc-CZyvUZ37HUsIfLi_X3pxOnh7yogM"
   },
   {
     id: "2",
     name: "Timnit Gebru",
     bio: "Leading AI researcher and ethicist, former co-lead of Google's Ethical AI team. Pioneering work on algorithmic bias and promoting diversity in AI research and development.",
-    avatar: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Timnit_Gebru.jpg/256px-Timnit_Gebru.jpg",
+    avatar: "https://radcliffe-harvard-edu.imgix.net/a7bba5e2-7668-44eb-be5d-03bed343dc0b/Timnit-Gebru_COURTESY.jpg",
     occupation: "AI Researcher / Ethicist",
     techStack: ["Python", "TensorFlow", "PyTorch", "Machine Learning", "Ethics"],
     age: 39,
     country: "Ethiopia/US",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Timnit_Gebru.jpg/256px-Timnit_Gebru.jpg"
+    image: "https://radcliffe-harvard-edu.imgix.net/a7bba5e2-7668-44eb-be5d-03bed343dc0b/Timnit-Gebru_COURTESY.jpg"
   },
   {
     id: "3",
@@ -43,23 +43,56 @@ const sampleUsers: UserProfile[] = [
     id: "4",
     name: "Lewam Kefela",
     bio: "Venture capital professional and design strategist, focusing on investing in African tech startups. Combining design thinking with business acumen to drive innovation.",
-    avatar: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Lewam_Kefela.jpg/256px-Lewam_Kefela.jpg",
+    avatar: "https://partechpartners.com/_next/image?url=https%3A%2F%2Fpartech-admin.prod.unomena.io%2Fmedia%2Fimages%2FLewam_Kafela.format-webp.webp&w=3840&q=75",
     occupation: "Venture / Design & Investment",
     techStack: ["Design Thinking", "Figma", "Analytics", "Business Strategy", "Investment"],
     age: 31,
     country: "Ethiopia",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Lewam_Kefela.jpg/256px-Lewam_Kefela.jpg"
+    image: "https://partechpartners.com/_next/image?url=https%3A%2F%2Fpartech-admin.prod.unomena.io%2Fmedia%2Fimages%2FLewam_Kafela.format-webp.webp&w=3840&q=75"
   },
   {
     id: "5",
     name: "Yadesa Bojia",
     bio: "Creative graphic designer and visual artist, known for blending traditional Ethiopian art with modern design principles. Creating visual narratives that celebrate African culture.",
-    avatar: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Yadesa_Bojia.jpg/256px-Yadesa_Bojia.jpg",
+    avatar: "https://images.squarespace-cdn.com/content/v1/5894e2861b10e3ecf54d5465/1521057709578-5WJSM0NUTAMPVR53W06F/Yaddie.jpg",
     occupation: "Graphic Designer / Artist",
     techStack: ["Photoshop", "Illustrator", "InDesign", "Traditional Art", "Branding"],
     age: 35,
     country: "Ethiopia",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Yadesa_Bojia.jpg/256px-Yadesa_Bojia.jpg"
+    image: "https://images.squarespace-cdn.com/content/v1/5894e2861b10e3ecf54d5465/1521057709578-5WJSM0NUTAMPVR53W06F/Yaddie.jpg"
+  },
+  {
+    id: "6",
+    name: "KinfeMichael Tariku",
+    bio: "Co-Founder and Founding Engineer at Better Auth, pioneering authentication solutions for modern applications. Former Frontend Engineer at Gebeta Maps, building innovative mapping technologies for Ethiopia.",
+    avatar: "https://images.crunchbase.com/image/upload/c_thumb,h_680,w_680,f_auto,g_face,z_0.7,b_white,q_auto:eco,dpr_1/5076dac89a5f495684084a4c0303e5cf",
+    occupation: "Founding Engineer / Co-Founder",
+    techStack: ["React", "Node.js", "Authentication", "Frontend", "Maps API"],
+    age: 28,
+    country: "Ethiopia",
+    image: "https://images.crunchbase.com/image/upload/c_thumb,h_680,w_680,f_auto,g_face,z_0.7,b_white,q_auto:eco,dpr_1/5076dac89a5f495684084a4c0303e5cf"
+  },
+  {
+    id: "7",
+    name: "Dagmawi Esayas",
+    bio: "Innovative software engineer and tech entrepreneur, known for building scalable solutions for Ethiopian businesses. Passionate about using technology to solve local challenges and drive digital transformation.",
+    avatar: "https://i.imgur.com/6YkKydE.png",
+    occupation: "Software Engineer / Entrepreneur",
+    techStack: ["Python", "JavaScript", "Docker", "AWS", "Microservices"],
+    age: 30,
+    country: "Ethiopia",
+    image: "https://i.imgur.com/6YkKydE.png"
+  },
+  {
+    id: "8",
+    name: "Temkin Mengistu",
+    bio: "Full-stack developer and tech mentor, dedicated to empowering the next generation of Ethiopian developers. Building educational platforms and contributing to open-source projects that benefit the local tech community.",
+    avatar: "https://i.imgur.com/TSFDVcR.jpeg",
+    occupation: "Full-Stack Developer / Tech Mentor",
+    techStack: ["React", "Node.js", "MongoDB", "Teaching", "Open Source"],
+    age: 32,
+    country: "Ethiopia",
+    image: "https://i.imgur.com/TSFDVcR.jpeg"
   }
 ];
 
