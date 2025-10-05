@@ -193,20 +193,20 @@ export function SwipeableCardStack({
     const getBorderColor = () => {
         if (isDragging && dragStart && dragCurrent) {
             const deltaX = dragCurrent.x - dragStart.x;
-            const threshold = 50; // Minimum distance for color change
-            const intensity = Math.min(Math.abs(deltaX) / 100, 1); // Intensity based on distance
+            const threshold = 30; // Lower threshold for earlier activation
+            const intensity = Math.min(Math.abs(deltaX) / 80, 1); // Intensity based on distance
 
             if (deltaX > threshold) {
-                const shadowIntensity = 0.4 + (intensity * 0.6); // Dynamic shadow intensity
-                const ringIntensity = 0.2 + (intensity * 0.4); // Dynamic ring intensity
-                return `border-green-500 shadow-[0_0_${20 + intensity * 30}px_rgba(34,197,94,${shadowIntensity})] shadow-green-500/50 ring-2 ring-green-500/${ringIntensity * 100}`; // Swipe right (like)
+                const shadowIntensity = 0.8 + (intensity * 0.2); // Very high base intensity
+                const blurRadius = 50 + (intensity * 80); // Even bigger blur radius (50-130px)
+                return `shadow-[0_0_${blurRadius}px_rgba(34,197,94,${shadowIntensity}),0_0_${blurRadius * 1.8}px_rgba(34,197,94,${shadowIntensity * 0.7}),0_0_${blurRadius * 2.5}px_rgba(34,197,94,${shadowIntensity * 0.4})] shadow-green-500/80`; // Swipe right (like)
             } else if (deltaX < -threshold) {
-                const shadowIntensity = 0.4 + (intensity * 0.6); // Dynamic shadow intensity
-                const ringIntensity = 0.2 + (intensity * 0.4); // Dynamic ring intensity
-                return `border-red-500 shadow-[0_0_${20 + intensity * 30}px_rgba(239,68,68,${shadowIntensity})] shadow-red-500/50 ring-2 ring-red-500/${ringIntensity * 100}`; // Swipe left (pass)
+                const shadowIntensity = 0.8 + (intensity * 0.2); // Very high base intensity
+                const blurRadius = 50 + (intensity * 80); // Even bigger blur radius (50-130px)
+                return `shadow-[0_0_${blurRadius}px_rgba(239,68,68,${shadowIntensity}),0_0_${blurRadius * 1.8}px_rgba(239,68,68,${shadowIntensity * 0.7}),0_0_${blurRadius * 2.5}px_rgba(239,68,68,${shadowIntensity * 0.4})] shadow-red-500/80`; // Swipe left (pass)
             }
         }
-        return "border-border shadow-lg"; // Default border with subtle shadow
+        return "shadow-lg"; // Just subtle shadow by default
     };
 
     if (!hasMoreCards) {
@@ -223,7 +223,7 @@ export function SwipeableCardStack({
     return (
         <div className={`flex flex-col h-full ${className}`}>
             {/* Swipeable Cards Container */}
-            <div className="flex-1 h-full">
+            <div className="flex-1 h-full relative overflow-visible">
                 {visibleUsers.map((user, index) => {
                     const style = getCardStyle(index);
                     const isActive = index === 0;
@@ -235,7 +235,7 @@ export function SwipeableCardStack({
                         <div
                             key={`${user.id}-${currentIndex + index}`}
                             ref={isActive ? cardRef : null}
-                            className={`w-full transition-all duration-300 ease-out ${getBorderColor()} border-4 rounded-lg relative z-10`}
+                            className="w-full transition-all duration-200 ease-out rounded-lg relative z-10"
                             style={{
                                 transform: `translate(${style.x}px, ${style.y}px) rotate(${style.rotation}deg) scale(${style.scale})`,
                                 opacity: style.opacity,
@@ -251,6 +251,7 @@ export function SwipeableCardStack({
                             <UserCard
                                 user={user}
                                 onClick={handleCardClick}
+                                borderClass={getBorderColor()}
                             />
                         </div>
                     );

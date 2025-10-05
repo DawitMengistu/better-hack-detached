@@ -19,9 +19,10 @@ export interface UserProfile {
 interface UserCardProps {
     user: UserProfile;
     onClick: (user: UserProfile) => void;
+    borderClass?: string;
 }
 
-export function UserCard({ user, onClick }: UserCardProps) {
+export function UserCard({ user, onClick, borderClass }: UserCardProps) {
     const getInitials = (name: string) => {
         return name
             .split(" ")
@@ -32,7 +33,7 @@ export function UserCard({ user, onClick }: UserCardProps) {
 
     return (
         <Card
-            className="w-full h-[calc(80vh-60px)] hover:shadow-lg transition-all duration-200 hover:scale-[1.02] overflow-hidden"
+            className={`w-full h-[calc(80vh-60px)] hover:shadow-lg transition-all duration-200 hover:scale-[1.02] overflow-hidden border-0 ${borderClass || ''}`}
         >
             <div className="h-full flex flex-col">
                 {/* Top Image Section - 50% of card height */}
