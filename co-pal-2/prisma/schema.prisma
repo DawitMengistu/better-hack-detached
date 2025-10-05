@@ -34,7 +34,6 @@ model User {
   // Match relations
   matchesAsUser1     Match[]      @relation("User1Matches")
   matchesAsUser2     Match[]      @relation("User2Matches")
-  // Profile relation
   profile            Profile?
 
   @@map("user")
