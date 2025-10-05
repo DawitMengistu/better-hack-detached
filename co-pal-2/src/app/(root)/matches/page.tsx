@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { IconMessage, IconEye, IconX } from "@tabler/icons-react";
 import { useState, useEffect } from "react";
+import { authClient } from '@/lib/auth-client';
 
 interface ApiMatch {
     id: string;
@@ -82,24 +83,40 @@ const formatTimeAgo = (dateString: string) => {
 export default function MatchesPage() {
     const [matchedUsers, setMatchedUsers] = useState<Match[]>([]);
     const [loading, setLoading] = useState(true);
-    const [currentUserId, setCurrentUserId] = useState<string>('current-user-id');
+    const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+
+    // Get session from auth client to identify the logged in user
+    const { data: session, isPending } = authClient.useSession();
 
     // Fetch real matches from backend
     useEffect(() => {
         const fetchCurrentUserAndMatches = async () => {
             try {
-                // First, get current user ID
-                const usersResponse = await fetch('/api/test-data/users');
-                const usersData = await usersResponse.json();
+                // Prefer session user id as the source of truth
+                let userIdToUse: string | null = null;
+                if (session && session.user && session.user.id) {
+                    console.log(`👤 [MATCHES] Session user id found: ${session.user.id}`);
+                    setCurrentUserId(session.user.id);
+                    userIdToUse = session.user.id;
+                } else {
+                    // Fallback: fetch test-data users only if session is not available
+                    console.log('⚠️ [MATCHES] No session user id available; falling back to test-data users');
+                    const usersResponse = await fetch('/api/test-data/users');
+                    const usersData = await usersResponse.json();
 
-                let userIdToUse = currentUserId;
-                if (usersData.success && usersData.users && usersData.users.length > 0) {
-                    const fetchedCurrentUserId = usersData.users[0]?.id;
-                    if (fetchedCurrentUserId) {
-                        setCurrentUserId(fetchedCurrentUserId);
-                        userIdToUse = fetchedCurrentUserId;
-                        console.log(`👤 [MATCHES] Current user: ${fetchedCurrentUserId}`);
+                    if (usersData.success && usersData.users && usersData.users.length > 0) {
+                        const fetchedCurrentUserId = usersData.users[0]?.id;
+                        if (fetchedCurrentUserId) {
+                            setCurrentUserId(fetchedCurrentUserId);
+                            userIdToUse = fetchedCurrentUserId;
+                            console.log(`👤 [MATCHES] Using fallback current user: ${fetchedCurrentUserId}`);
+                        }
                     }
+                }
+                if (!userIdToUse) {
+                    console.warn('⚠️ [MATCHES] No user id available to fetch matches');
+                    setMatchedUsers([]);
+                    return;
                 }
 
                 // Then fetch matches with current user ID

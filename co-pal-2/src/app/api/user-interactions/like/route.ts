@@ -8,33 +8,33 @@ export async function POST(request: NextRequest) {
   const sessionData = await auth.api.getSession({ headers: request.headers });
 
   console.log('ms',sessionData)
-  const myuserID = sessionData?.session.userId;
+  const userId = sessionData?.session.userId;
 
   try {
-    const { userId, likedId } = await request.json();
-    console.log(`📝 [LIKE API] SWIPE EVENT: userId=${myuserID}, likedId=${likedId}`);
-    console.log("📝 [LIKE API] Request data:", { myuserID, likedId });
+    const {  likedId } = await request.json();
+    console.log(`📝 [LIKE API] SWIPE EVENT: userId=${userId}, likedId=${likedId}`);
+    console.log("📝 [LIKE API] Request data:", { userId, likedId });
 
-    if (!myuserID || !likedId) {
+    if (!userId || !likedId) {
       console.log("❌ [LIKE API] Missing required fields");
       return NextResponse.json(
-        { error: "Missing required fields: myuserID and likedId" },
+        { error: "Missing required fields: userId and likedId" },
         { status: 400 }
       );
     }
 
-    if (myuserID === likedId) {
+    if (userId === likedId) {
       console.log("❌ [LIKE API] User trying to like themselves");
       return NextResponse.json(
         { error: "Cannot like yourself" },
         { status: 400 }
       );
     }
-
+    console.log(userId,likedId)
     // Check if both users exist in database
     console.log("🔍 [LIKE API] Checking if users exist");
     const [currentUser, likedUser] = await Promise.all([
-      prisma.user.findUnique({ where: { id: myuserID } }),
+      prisma.user.findUnique({ where: { id: userId } }),
       prisma.user.findUnique({ where: { id: likedId } }),
     ]);
 
@@ -57,7 +57,7 @@ export async function POST(request: NextRequest) {
     const existingLike = await prisma.userLike.findUnique({
       where: {
         userId_likedId: {
-          myuserID,
+          userId,
           likedId,
         },
       },
@@ -75,7 +75,7 @@ export async function POST(request: NextRequest) {
     console.log("💚 [LIKE API] Creating new like");
     const like = await prisma.userLike.create({
       data: {
-        myuserID,
+        userId,
         likedId,
       },
       include: {
@@ -95,8 +95,8 @@ export async function POST(request: NextRequest) {
     const mutualLike = await prisma.userLike.findUnique({
       where: {
         userId_likedId: {
-          myuserID: likedId,
-          likedId: myuserID,
+          userId: likedId,
+          likedId: userId,
         },
       },
     });
