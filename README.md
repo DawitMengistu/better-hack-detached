@@ -89,23 +89,23 @@ A Tinder-like platform specifically designed for tech professionals to discover,
 #### 📱 **Swipe-Based Discovery**
 
 - Tinder-like interface for discovering collaborators
-- Real-time profile matching
-- Advanced filtering by skills, location, and project interests
-- Gesture-based interaction with haptic feedback
+- Gesture-based swipe interactions (left/right)
+- Dynamic border effects and visual feedback during swipes
+- Profile modal with detailed project information
 
-#### 💬 **Smart Collaboration Tools**
+#### 💬 **Connection & Interaction System**
 
-- In-app messaging system
-- Project management integration
-- Video calling capabilities
-- File sharing and version control
+- Token-based connection system with cost management
+- Real-time balance tracking and updates
+- Connection success notifications
+- User profile browsing with swipe gestures
 
-#### 📊 **Analytics & Insights**
+#### 📊 **Profile & Project Showcase**
 
-- User engagement tracking
-- Collaboration success metrics
-- Skill development progress
-- Project impact measurement
+- Dynamic user profiles with personalized project data
+- Category-based project filtering
+- Interactive project galleries with image carousels
+- Real-time connection status updates
 
 ## 🎨 User Experience Highlights
 
